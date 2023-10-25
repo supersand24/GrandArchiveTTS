@@ -175,12 +175,18 @@ end
 function spawnZones()
   boardPos = self.getPosition()
 
+  if self.getRotation().y > 90 then
+    mod = 1
+  else
+    mod = -1
+  end
+
   fieldZone = spawnObject({
     type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
     position          = {
       boardPos.x,
       2,
-      boardPos.z + 5.5
+      boardPos.z + (5.5 * mod)
     },
     rotation          = self.getRotation(),
     scale             = {30,2,15},
@@ -193,7 +199,7 @@ function spawnZones()
     position          = {
       boardPos.x,
       2,
-      boardPos.z - 7.25
+      boardPos.z - (7.25 * mod)
     },
     rotation          = self.getRotation(),
     scale             = {30,2,10},
@@ -204,9 +210,9 @@ function spawnZones()
   graveyardZone = spawnObject({
     type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
     position          = {
-      boardPos.x + zones.graveyard.x,
+      boardPos.x + (zones.graveyard.x * mod),
       2,
-      boardPos.z + zones.graveyard.z
+      boardPos.z + (zones.graveyard.z * mod)
     },
     rotation          = self.getRotation(),
     scale             = {4,2,5},
@@ -217,9 +223,9 @@ function spawnZones()
   mainDeckZone = spawnObject({
     type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
     position          = {
-      boardPos.x + zones.mainDeck.x,
+      boardPos.x + (zones.mainDeck.x * mod),
       2,
-      boardPos.z + zones.mainDeck.z
+      boardPos.z + (zones.mainDeck.z * mod)
     },
     rotation          = self.getRotation(),
     scale             = {4,2,5},
@@ -230,9 +236,9 @@ function spawnZones()
   banishmentZone = spawnObject({
     type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
     position          = {
-      boardPos.x + zones.banishment.x,
+      boardPos.x + (zones.banishment.x * mod),
       2,
-      boardPos.z + zones.banishment.z
+      boardPos.z + (zones.banishment.z * mod)
     },
     rotation          = self.getRotation(),
     scale             = {4,2,5},
@@ -243,9 +249,9 @@ function spawnZones()
   materialDeckZone = spawnObject({
     type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
     position          = {
-      boardPos.x + zones.materialDeck.x,
+      boardPos.x + (zones.materialDeck.x * mod),
       2,
-      boardPos.z + zones.materialDeck.z
+      boardPos.z + (zones.materialDeck.z * mod)
     },
     rotation          = self.getRotation(),
     scale             = {4,2,5},
