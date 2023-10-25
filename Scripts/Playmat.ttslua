@@ -1,0 +1,345 @@
+local deckAreas = {
+  main = {
+    x = 38.4,
+    y = 3,
+    z = -11.5,
+    rotation = 180
+  },
+  material = {
+    x = 2.8,
+    y = 3,
+    z = -11.5,
+    rotation = 180
+  },
+  side = {
+    x = 2.8,
+    y = 3,
+    z = -5.75,
+    rotation = 270
+  }
+}
+
+local fieldZone = nil
+local memoryZone = nil
+local graveyardZone = nil
+local mainDeckZone = nil
+local banishmentZone = nil
+local materialDeckZone = nil
+
+local playerColor = "Blue"
+
+local deckURL = "https://build.silvie.org/"
+
+function syncTextFields(player, value, id)
+  --Set deckURL while trimming whitespace.
+  deckURL = string.gsub(value, "%s+", "");
+end
+
+--When the Import Deck Button is pressed.
+function onImportDeckButtonPressed()
+
+  if Global.call("stringStartsWith",{string=deckURL,startsWith="https://"}) or Global.call("stringStartsWith",{string=deckURL,startsWith="build"}) or Global.call("stringStartsWith",{string=deckURL,startsWith="@"}) then
+
+    --Append http://build.silvie.org/ if it isn't there or properly formatted.
+    if Global.call("stringStartsWith",{string=deckURL,startsWith="https://build.silvie.org/"}) == false and Global.call("stringStartsWith",{string=deckURL,startsWith="https://build-v2.silvie.org/"}) == false then
+      log("Deck url didn't have the correct header.")
+      if Global.call("stringStartsWith",{string=deckURL,startsWith="build.silvie.org/"}) or Global.call("stringStartsWith",{string=deckURL,startsWith="build-v2.silvie.org/"}) then
+        log("Adding https:// to " .. deckURL)
+        deckURL = "https://" .. deckURL
+      else
+        log("Adding https:// to " .. deckURL)
+        deckURL = "https://build-v2.silvie.org/" .. deckURL
+      end
+    end
+
+    log("Importing " .. deckURL)
+
+    --Append ?format=json if it isn't there.
+    if Global.call("stringEndsWith",{string=deckURL,endsWith="?format=json"}) == false then
+      deckURL = deckURL .. "?format=json"
+    end
+
+    --Get Deck from URL
+    WebRequest.get(deckURL, function(request)
+      if request.is_error then
+        log(request.error)
+      else
+
+        json = JSON.decode(request.text)
+
+        --Check for Error from silve.org
+        if json.error ~= nil then
+          log(json.error)
+          if json.error == "silvie/bad-request" then
+            broadcastToColor("Could not find a Deck under that URL!", playerColor, {255,0,0})
+          else
+            broadcastToColor("Unknown Error!", playerColor, {255,0,0})
+          end
+        else
+          --Start Spawning Cards
+          broadcastToColor("Importing " .. json.name .. " from " .. json.creator, playerColor, {255,255,255})
+
+          Global.call("importDecks", {
+            decks=json.cards,
+            mainDeck={
+              posistion={x = deckAreas.main.x,y = deckAreas.main.y,z = deckAreas.main.z},
+              rotation = self.getRotation()},
+            materialDeck={
+              posistion={x = deckAreas.material.x,y = deckAreas.material.y,z = deckAreas.material.z},
+              rotation = self.getRotation()},
+            sideDeck={
+              posistion={x = deckAreas.side.x,y = deckAreas.side.y,z = deckAreas.side.z},
+              rotation = self.getRotation()}
+          })
+
+          -- Hide Import Button UI
+          self.UI.hide(string.lower(playerColor) .. "Panel")
+
+        end
+
+      end
+
+    end)
+
+  else
+    broadcastToColor("URL is incorrect, make sure you didn't add any extra characters.", playerColor, {255,0,0})
+  end
+end
+
+function onCloseDeckImportButtonPressed()
+  self.UI.hide(string.lower(playerColor) .. "Panel")
+end
+
+function onReadyUpButtonPressed()
+  Global.call("startGame")
+end
+
+function onPayOneMemoryButtonPressed()
+  local memoryCards = 0
+  local memoryCheck = 0
+
+  if (memoryZone.getObjects()) != nil then
+    memoryCards = #memoryZone.getObjects()-1
+    randomCard = math.random(memoryCards)
+
+    for _,item in ipairs(memoryZone.getObjects()) do
+      if item.tag == "Card" then
+        memoryCheck = memoryCheck + 1
+        if memoryCheck == randomCard then
+          rotation = self.getRotation()
+          item.setPositionSmooth(banishmentZone.getPosition())
+          item.setRotationSmooth({rotation.x,rotation.y+90,rotation.z})
+        end
+      end
+    end
+  end
+end
+
+function onRevealRandomButtonPressed()
+  local memoryCards = 0
+  local memoryCheck = 0
+
+  if (memoryZone.getObjects()) != nil then
+    memoryCards = #memoryZone.getObjects()-1
+    randomCard = math.random(memoryCards)
+
+    for _,item in ipairs(memoryZone.getObjects()) do
+      if item.tag == "Card" then
+        memoryCheck = memoryCheck + 1
+        if memoryCheck == randomCard then
+          item.flip()
+        end
+      end
+    end
+  end
+end
+
+function onRecollectButtonPressed()
+  if (memoryZone.getObjects()) != nil then
+    for _,item in ipairs(memoryZone.getObjects()) do
+      if item.tag == "Card" then
+        item.deal(1,playerColor)
+      end
+    end
+  end
+
+end
+
+function spawnZones()
+  boardPos = self.getPosition()
+
+  fieldZone = spawnObject({
+    type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
+    position          = {boardPos.x,2,boardPos.z+5.5},
+    rotation          = self.getRotation(),
+    scale             = {30,2,15},
+    sound             = false,
+    snap_to_grid      = false,
+  })
+
+  memoryZone = spawnObject({
+    type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
+    position          = {boardPos.x,2,boardPos.z-7.25},
+    rotation          = self.getRotation(),
+    scale             = {30,2,10},
+    sound             = false,
+    snap_to_grid      = false,
+  })
+
+  graveyardZone = spawnObject({
+    type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
+    position          = {boardPos.x+17.5,2,boardPos.z-4.75},
+    rotation          = self.getRotation(),
+    scale             = {4,2,5},
+    sound             = false,
+    snap_to_grid      = false,
+  })
+
+  mainDeckZone = spawnObject({
+    type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
+    position          = {boardPos.x+17.5,2,boardPos.z+1.5},
+    rotation          = self.getRotation(),
+    scale             = {4,2,5},
+    sound             = false,
+    snap_to_grid      = false,
+  })
+
+  banishmentZone = spawnObject({
+    type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
+    position          = {boardPos.x+17.5,2,boardPos.z+7.75},
+    rotation          = self.getRotation(),
+    scale             = {4,2,5},
+    sound             = false,
+    snap_to_grid      = false,
+  })
+
+  materialDeckZone = spawnObject({
+    type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
+    position          = {boardPos.x-17.5,2,boardPos.z+1.5},
+    rotation          = self.getRotation(),
+    scale             = {4,2,5},
+    sound             = false,
+    snap_to_grid      = false,
+  })
+end
+
+function setSizePosistionAndRotation()
+  self.setScale({12,1,12})
+  self.setRotation({0,180,0})
+end
+
+function onLoad()
+
+  --Prevent ALT Interaction
+  self.interactable = true
+
+  spawnZones()
+  setSizePosistionAndRotation()
+
+  leftCol = 1.455
+  rightCol = -1.455
+  midRow = -0.12
+  boardCenter = 0
+
+  snapPoints = {
+      -- Material Deck
+      { position = {leftCol,0,midRow},
+        rotation = {0,0,0},
+        rotation_snap = true
+      },
+
+      -- Side Deck
+      { position = {leftCol,0,-0.58},
+        rotation = {0,90,0},
+        rotation_snap = true
+      },
+
+      -- Damage Taken Counter
+      { position = {leftCol,0,midRow + 0.35},
+        rotation = {0,180,0},
+        rotation_snap = true,
+        tags = {"Game Counter"}
+      },
+
+      -- Main Deck
+      { position = {rightCol,0,midRow},
+        rotation = {0,0,0},
+        rotation_snap = true
+      },
+
+      -- Draw Counter
+      { position = {rightCol - 0.25,0,midRow},
+        rotation = {0,270,0},
+        rotation_snap = true
+      },
+
+      -- Graveyards
+      { position = {rightCol,0,0.4},
+        rotation = {0,0,0},
+        rotation_snap = true
+      },
+
+      -- Graveyard Floating Memory Counter
+      { position = {rightCol,0,0.7},
+        rotation = {0,180,0},
+        rotation_snap = true,
+        tags = {"Game Counter"}
+      },
+
+      -- Graveyard Etc Counter
+      { position = {rightCol,0,0.9},
+        rotation = {0,180,0},
+        rotation_snap = true,
+        tags = {"Game Counter"}
+      },
+
+      -- Banishment
+      { position = {rightCol,0,-0.58},
+        rotation = {0,90,0},
+        rotation_snap = true
+      },
+
+      -- Banishment Etc Counter
+      { position = {rightCol,0,-0.88},
+        rotation = {0,180,0},
+        rotation_snap = true,
+        tags = {"Game Counter"}
+      },
+
+  }
+
+  -- Field Snap Points
+  fieldRow = {}
+  fieldRow[1] = 0
+  fieldRow[2] = fieldRow[1] - 0.185
+  fieldRow[3] = fieldRow[2] - 0.185
+  fieldRow[4] = fieldRow[3] - 0.185
+  fieldRow[5] = fieldRow[4] - 0.185
+  fieldCardSpacing = 0.175
+  for _, row in ipairs(fieldRow) do
+    for i=-6, 6 do
+      snapPoints[#snapPoints + 1] = { position = {boardCenter + fieldCardSpacing*i,0,row},
+                                      rotation = {0,0,0},
+                                      rotation_snap = false,
+                                      tags = {"Card"}
+                                    }
+    end
+  end
+
+  -- Memory Snap Points
+  memoryRow = {}
+  memoryRow[1] = 0.475
+  memoryRow[2] = memoryRow[1] + 0.185
+  memoryCardSpacing = 0.135
+  for _, row in ipairs(memoryRow) do
+    for i=-8, 8 do
+      snapPoints[#snapPoints + 1] = { position = {boardCenter + memoryCardSpacing*i,0,row},
+                                      rotation = {0,0,0},
+                                      rotation_snap = true,
+                                      tags = {"Card"}
+                                    }
+    end
+  end
+
+  self.setSnapPoints(snapPoints)
+end

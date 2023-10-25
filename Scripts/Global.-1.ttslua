@@ -1,0 +1,411 @@
+--[[
+Grand Archive TCG
+Grand Archive created by Weebs of the Shore LLC, all rights reserved.
+Updated Mod Created by supersand24 (supersand24#2424 on Discord)
+Original Mod Created by Chris Orrell (Australian TCG)
+
+Grand Archive Website : https://www.grandarchivetcg.com/
+Grand Archive Discord : https://discord.gg/8gM49zN2XD
+Grand Archive Kickstarter : https://www.kickstarter.com/projects/weebs/grand-archive-tcg
+
+Version 0.9.1
+
+--]]
+
+--RED_FIELD = '422aa0'
+--RED_MAIN_DECK = '899ae6'
+--RED_BANISHMENT = '759524'
+--RED_GRAVEYARD = '130901'
+--RED_MEMORY = '7e5cde'
+--RED_MATERIAL_DECK = '7b4023'
+--RED_SIDE_DECK = 'bb7467'
+--RED_HAND = '263e95'
+
+RED_HANDBOOK = '477299'
+RED_TABLET = '55c6df'
+RED_TOKENS = 'c8c527'
+RED_DRAW_COUNTER = '8f73ae'
+
+
+--BLUE_FIELD = '64a31a'
+--BLUE_MAIN_DECK = '4b601d'
+--BLUE_BANISHMENT = 'bf0bf6'
+--BLUE_GRAVEYARD = '3f5b96'
+--BLUE_MEMORY = 'a78eb3'
+--BLUE_MATERIAL_DECK = '1900d7'
+--BLUE_SIDE_DECK = 'cc55fc'
+--BLUE_HAND = 'c8c094'
+
+BLUE_HANDBOOK = 'df0233'
+BLUE_TABLET = '6ceec1'
+BLUE_TOKENS = '96e172'
+BLUE_DRAW_COUNTER = '1d4bc4'
+
+
+--GREEN_FIELD = '12cd8a'
+--GREEN_MAIN_DECK = '252ffb'
+--GREEN_BANISHMENT = 'd85b34'
+--GREEN_GRAVEYARD = '8ebe95'
+--GREEN_MEMORY = '42468c'
+--GREEN_MATERIAL_DECK = '36df7d'
+--GREEN_SIDE_DECK = '6099b9'
+--GREEN_HAND = 'c19dc8'
+
+GREEN_HANDBOOK = '6eec32'
+GREEN_TABLET = '89c0cf'
+GREEN_TOKENS = 'd3281b'
+GREEN_DRAW_COUNTER = '760afb'
+
+
+--YELLOW_FIELD = '402694'
+--YELLOW_MAIN_DECK = '63754b'
+--YELLOW_BANISHMENT = '85d7ce'
+--YELLOW_GRAVEYARD = '49513d'
+--YELLOW_MEMORY = 'dca290'
+--YELLOW_MATERIAL_DECK = '05c656'
+--YELLOW_SIDE_DECK = '2a10a7'
+--YELLOW_HAND = '1ac84e'
+
+YELLOW_HANDBOOK = 'a6c2e6'
+YELLOW_TABLET = '1a66e5'
+YELLOW_TOKENS = '38fce2'
+YELLOW_DRAW_COUNTER = '167ada'
+
+
+privacyZones = {
+  Red = {"Blue","Green","Yellow"},
+  Blue = {"Red","Green","Yellow"},
+  Green = {"Red","Blue","Yellow"},
+  Yellow = {"Red","Blue","Green"}
+}
+
+--TTS is lacking in this area...
+--Was looking forward to adding some kind of Log for card movement.
+--Can't give variables to cards in a deck, making drawing cards throw an error. :(
+gameZones = {
+  mainDeck = {
+    ttsName = "Main Deck",
+    movementFlavorText = {
+      mainDeck = "added?",        -- Main Deck -> Main Deck
+      materialDeck = "added",     -- Material Deck -> Main Deck
+      sideDeck = "added",         -- Side Deck -> Main Deck
+      graveyard = "added",        -- Graveyard -> Main Deck
+      banishment = "unbanished",  -- Banishment -> Main Deck
+      field = "returned",         -- Field -> Main Deck
+      memory = "returned",        -- Memory -> Main Deck
+      hand = "returned"           -- Hand -> Main Deck
+    },
+    private = true,
+    logRevealActions = false
+  },
+  materialDeck = {
+    ttsName = "Material Deck",
+    movementFlavorText = {
+      mainDeck = "added",         -- Main Deck -> Material Deck
+      materialDeck = "added?",    -- Material Deck -> Material Deck
+      sideDeck = "added",         -- Side Deck -> Material Deck
+      graveyard = "added",        -- Graveyard -> Material Deck
+      banishment = "unbanished",  -- Banishment -> Material Deck
+      field = "preserved",        -- Field -> Material Deck
+      memory = "added",           -- Memory -> Material Deck
+      hand = "added"              -- Hand -> Material Deck
+    },
+    private = true,
+    logRevealActions = false
+  },
+  sideDeck = {
+    ttsName = "Side Deck",
+    movementFlavorText = {
+      mainDeck = "added",         -- Main Deck -> Side Deck
+      materialDeck = "added",     -- Material Deck -> Side Deck
+      sideDeck = "added?",        -- Side Deck -> Side Deck
+      graveyard = "added",        -- Graveyard -> Side Deck
+      banishment = "added",       -- Banishment -> Side Deck
+      field = "added",            -- Field -> Side Deck
+      memory = "added",           -- Memory -> Side Deck
+      hand = "added"              -- Hand -> Side Deck
+    },
+    private = true,
+    logRevealActions = false
+  },
+  graveyard = {
+    ttsName = "Graveyard",
+    movementFlavorText = {
+      mainDeck = "milled",        -- Main Deck -> Graveyard
+      materialDeck = "moved",     -- Material Deck -> Graveyard
+      sideDeck = "moved",         -- Side Deck -> Graveyard
+      graveyard = "added?",       -- Graveyard -> Graveyard
+      banishment = "unbanished",  -- Banishment -> Graveyard
+      field = "buried",           -- Field -> Graveyard
+      memory = "moved",           -- Memory -> Graveyard
+      hand = "discarded"          -- Hand -> Graveyard
+    },
+    private = false,
+    logRevealActions = false
+  },
+  banishment = {
+    ttsName = "Banishment",
+    movementFlavorText = {
+      mainDeck = "milled",        -- Main Deck -> Banishment
+      materialDeck = "banished",  -- Material Deck -> Banishment
+      sideDeck = "moved",         -- Side Deck -> Banishment
+      graveyard = "banished",     -- Graveyard -> Banishment
+      banishment = "unbanished?", -- Banishment -> Banishment
+      field = "banished",         -- Field -> Banishment
+      memory = "banished",        -- Memory -> Banishment
+      hand = "banished"           -- Hand -> Banishment
+    },
+    private = false,
+    logRevealActions = false
+  },
+  field = {
+    ttsName = "Field",
+    movementFlavorText = {
+      mainDeck = "played",            -- Main Deck -> Field
+      materialDeck = "materialized",  -- Material Deck -> Field
+      sideDeck = "moved",             -- Side Deck -> Field
+      graveyard = "revived",          -- Graveyard -> Field
+      banishment = "unbanished",      -- Banishment -> Field
+      field = "played",               -- Field -> Field
+      memory = "played",              -- Memory -> Field
+      hand = "played"                 -- Hand -> Field
+    },
+    private = false,
+    logRevealActions = true
+  },
+  memory = {
+    ttsName = "Memory",
+    movementFlavorText = {
+      mainDeck = "drew",          -- Main Deck -> Memory
+      materialDeck = "moved",     -- Material Deck -> Memory
+      sideDeck = "moved",         -- Side Deck -> Memory
+      graveyard = "moved",        -- Graveyard -> Memory
+      banishment = "unbanished",  -- Banishment -> Memory
+      field = "removed",          -- Field -> Memory
+      memory = "moved",           -- Memory -> Memory
+      hand = "paid"               -- Hand -> Memory
+    },
+    private = true,
+    logRevealActions = true
+  },
+  hand = {
+    ttsName = "Hand",
+    movementFlavorText = {
+      mainDeck = "drew",          -- Main Deck -> Hand
+      materialDeck = "returned",  -- Material Deck -> Hand
+      sideDeck = "moved",         -- Side Deck -> Hand
+      graveyard = "dug up",       -- Graveyard -> Hand
+      banishment = "unbanished",  -- Banishment -> Hand
+      field = "returned",         -- Field -> Hand
+      memory = "recollected",     -- Memory -> Hand
+      hand = "gave"               -- Hand -> Hand
+    },
+    private = true,
+    logRevealActions = false
+  }
+}
+
+function onObjectLeaveContainer(container, leave_object)
+  if (leave_object.name != "CardCustom") then return end
+  leave_object.addTag("Card")
+end
+
+
+function onObjectDrop(colorName, object)
+  inHand = false
+  for _, zone in ipairs(object.getZones()) do
+    if zone.name == "HandTrigger" then
+      inHand = true
+    end
+  end
+
+  if inHand then
+    object.setHiddenFrom(privacyZones[colorName])
+  else
+    object.setHiddenFrom({})
+  end
+end
+
+function onObjectEnterZone(zone, object)
+  if zone.name == "HandTrigger" and object.held_by_color == nil then
+    object.setHiddenFrom(privacyZones[zone.getValue()])
+  end
+end
+
+function importDecks(params)
+  --Main Deck
+  for c,card in pairs(params.decks.main) do
+    for i=1, card.quantity do
+      spawnGrandArchiveCard(card.name, card.image, params.mainDeck.posistion.x, params.mainDeck.posistion.y, params.mainDeck.posistion.z, params.mainDeck.rotation)
+    end
+  end
+
+  --Material Deck
+  for c,card in pairs(params.decks.material) do
+    for i=1, card.quantity do
+      spawnGrandArchiveCard(card.name, card.image, params.materialDeck.posistion.x, params.materialDeck.posistion.y, params.materialDeck.posistion.z, params.materialDeck.rotation)
+    end
+  end
+
+  --Side Deck
+  for c,card in pairs(params.decks.sideboard) do
+    for i=1, card.quantity do
+      spawnGrandArchiveCard(card.name, card.image, params.sideDeck.posistion.x, params.sideDeck.posistion.y, params.sideDeck.posistion.z, params.sideDeck.rotation)
+    end
+  end
+end
+
+function spawnGrandArchiveCard(name, image, x, y, z, rot)
+  object = spawnObjectData({
+    data = {
+        Name = "CardCustom",
+        Transform = {
+            posX = x,
+            posY = y,
+            posZ = z,
+            rotX = 0,
+            rotY = rot,
+            rotZ = 180,
+            scaleX = 1.42055011,
+            scaleY = 1,
+            scaleZ = 1.42055011
+        },
+        Nickname = name,
+        CardID = 10000,
+        CustomDeck = {
+          [100] = {
+            FaceURL = image,
+            BackURL = "https://img.silvie.org/cdn/deck-builder/card-back.png",
+            NumWidth = 1,
+            NumHeight = 1,
+            BackIsHidden = true,
+            UniqueBack = false,
+            Type = 0
+          }
+        }
+    }
+  })
+end
+
+function onPlayerAction(player, action, targets)
+  -- Rotate Scripted Counter Left
+  -- If Value is 1, delete it.
+  -- Else, Update UI
+  if action == Player.Action.RotateIncrementalLeft then
+    for _, target in ipairs(targets) do
+      if target.hasTag("Scripted Counter") == false then return true end
+      if target.getValue() == 1 then target.destroy() else
+        target.call("updateNameAndDescription", target.getValue() - 1)
+      end
+    end
+
+  -- Rotate Scripted Counter Right
+  -- If Value is 20, create another counter next to it.
+  -- Else, Update UI
+  elseif action == Player.Action.RotateIncrementalRight then
+    for _, target in ipairs(targets) do
+      if target.hasTag("Scripted Counter") == false then return true end
+      if target.getValue() == 20 then return false else
+        target.call("updateNameAndDescription", target.getValue() + 1)
+      end
+    end
+
+  end
+
+  -- Allow the action.
+  return true
+end
+
+function onPlayerTurnEnd(player_color_end, player_color_next)
+  -- Delete All Temporary Counters
+  for _, object in ipairs(getObjectsWithTag("Temporary")) do
+    destroyObject(object)
+  end
+
+  -- Reset Cards Drawn Counters
+  getObjectFromGUID(RED_DRAW_COUNTER).Counter.clear()
+  getObjectFromGUID(BLUE_DRAW_COUNTER).Counter.clear()
+  getObjectFromGUID(GREEN_DRAW_COUNTER).Counter.clear()
+  getObjectFromGUID(YELLOW_DRAW_COUNTER).Counter.clear()
+end
+
+function onLoad(save_state)
+  --[[
+  for k,v in pairs(getSeatedPlayers()) do
+    if Player[v].host then
+      Player[v].showOptionsDialog("Game Settings", {"1","2"}, 2)
+    end
+  end
+  --]]
+
+  --getObjectFromGUID(RED_FIELD).setVar("owner", "Red")
+  --getObjectFromGUID(RED_MEMORY).setVar("owner", "Red")
+  --getObjectFromGUID(RED_GRAVEYARD).setVar("owner", "Red")
+  --getObjectFromGUID(RED_BANISHMENT).setVar("owner", "Red")
+  --getObjectFromGUID(RED_MAIN_DECK).setVar("owner", "Red")
+  --getObjectFromGUID(RED_MATERIAL_DECK).setVar("owner", "Red")
+  --getObjectFromGUID(RED_SIDE_DECK).setVar("owner", "Red")
+  --getObjectFromGUID(RED_HAND).setVar("owner", "Red")
+
+  getObjectFromGUID(RED_TABLET).setInvisibleTo(privacyZones["Red"])
+  getObjectFromGUID(RED_HANDBOOK).setInvisibleTo(privacyZones["Red"])
+  for _, bag in ipairs(getObjectFromGUID(RED_TOKENS).getObjects()) do
+    bag.setInvisibleTo(privacyZones["Red"])
+  end
+
+  --getObjectFromGUID(BLUE_FIELD).setVar("owner", "Blue")
+  --getObjectFromGUID(BLUE_MEMORY).setVar("owner", "Blue")
+  --getObjectFromGUID(BLUE_GRAVEYARD).setVar("owner", "Blue")
+  --getObjectFromGUID(BLUE_BANISHMENT).setVar("owner", "Blue")
+  --getObjectFromGUID(BLUE_MAIN_DECK).setVar("owner", "Blue")
+  --getObjectFromGUID(BLUE_MATERIAL_DECK).setVar("owner", "Blue")
+  --getObjectFromGUID(BLUE_SIDE_DECK).setVar("owner", "Blue")
+  --getObjectFromGUID(BLUE_HAND).setVar("owner", "Blue")
+
+  getObjectFromGUID(BLUE_TABLET).setInvisibleTo(privacyZones["Blue"])
+  getObjectFromGUID(BLUE_HANDBOOK).setInvisibleTo(privacyZones["Blue"])
+  for _, bag in ipairs(getObjectFromGUID(BLUE_TOKENS).getObjects()) do
+    bag.setInvisibleTo(privacyZones["Blue"])
+  end
+
+  --getObjectFromGUID(GREEN_FIELD).setVar("owner", "Green")
+  --getObjectFromGUID(GREEN_MEMORY).setVar("owner", "Green")
+  --getObjectFromGUID(GREEN_GRAVEYARD).setVar("owner", "Green")
+  --getObjectFromGUID(GREEN_BANISHMENT).setVar("owner", "Green")
+  --getObjectFromGUID(GREEN_MAIN_DECK).setVar("owner", "Green")
+  --getObjectFromGUID(GREEN_MATERIAL_DECK).setVar("owner", "Green")
+  --getObjectFromGUID(GREEN_SIDE_DECK).setVar("owner", "Green")
+  --getObjectFromGUID(GREEN_HAND).setVar("owner", "Green")
+
+  getObjectFromGUID(GREEN_TABLET).setInvisibleTo(privacyZones["Green"])
+  getObjectFromGUID(GREEN_HANDBOOK).setInvisibleTo(privacyZones["Green"])
+  for _, bag in ipairs(getObjectFromGUID(GREEN_TOKENS).getObjects()) do
+    bag.setInvisibleTo(privacyZones["Green"])
+  end
+
+  --getObjectFromGUID(YELLOW_FIELD).setVar("owner", "Yellow")
+  --getObjectFromGUID(YELLOW_MEMORY).setVar("owner", "Yellow")
+  --getObjectFromGUID(YELLOW_GRAVEYARD).setVar("owner", "Yellow")
+  --getObjectFromGUID(YELLOW_BANISHMENT).setVar("owner", "Yellow")
+  --getObjectFromGUID(YELLOW_MAIN_DECK).setVar("owner", "Yellow")
+  --getObjectFromGUID(YELLOW_MATERIAL_DECK).setVar("owner", "Yellow")
+  --getObjectFromGUID(YELLOW_SIDE_DECK).setVar("owner", "Yellow")
+  --getObjectFromGUID(YELLOW_HAND).setVar("owner", "Yellow")
+
+  getObjectFromGUID(YELLOW_TABLET).setInvisibleTo(privacyZones["Yellow"])
+  getObjectFromGUID(YELLOW_HANDBOOK).setInvisibleTo(privacyZones["Yellow"])
+  for _, bag in ipairs(getObjectFromGUID(YELLOW_TOKENS).getObjects()) do
+    bag.setInvisibleTo(privacyZones["Yellow"])
+  end
+
+end
+
+--Returns true if str starts with start.
+function stringStartsWith(params)
+   return params.string:sub(1, #params.startsWith) == params.startsWith
+end
+
+--Returns true if str end with ending.
+function stringEndsWith(params)
+  return params.endsWith == "" or params.string:sub(-#params.endsWith) == params.endsWith
+end
