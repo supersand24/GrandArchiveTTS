@@ -1,21 +1,28 @@
-local deckAreas = {
-  main = {
-    x = 38.4,
+local zones = {
+  banishment = {
+    x = 17.5,
     y = 3,
-    z = -11.5,
-    rotation = 180
+    z = 7.5
   },
-  material = {
-    x = 2.8,
+  mainDeck = {
+    x = 17.5,
     y = 3,
-    z = -11.5,
-    rotation = 180
+    z = 1.5
   },
-  side = {
-    x = 2.8,
+  graveyard = {
+    x = 17.5,
     y = 3,
-    z = -5.75,
-    rotation = 270
+    z = -4.75
+  },
+  sideboard = {
+    x = -17.5,
+    y = 3,
+    z = 1.5
+  },
+  materialDeck = {
+    x = -17.5,
+    y = 3,
+    z = 1.5
   }
 }
 
@@ -170,7 +177,11 @@ function spawnZones()
 
   fieldZone = spawnObject({
     type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
-    position          = {boardPos.x,2,boardPos.z+5.5},
+    position          = {
+      boardPos.x,
+      2,
+      boardPos.z + 5.5
+    },
     rotation          = self.getRotation(),
     scale             = {30,2,15},
     sound             = false,
@@ -179,7 +190,11 @@ function spawnZones()
 
   memoryZone = spawnObject({
     type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
-    position          = {boardPos.x,2,boardPos.z-7.25},
+    position          = {
+      boardPos.x,
+      2,
+      boardPos.z - 7.25
+    },
     rotation          = self.getRotation(),
     scale             = {30,2,10},
     sound             = false,
@@ -188,7 +203,11 @@ function spawnZones()
 
   graveyardZone = spawnObject({
     type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
-    position          = {boardPos.x+17.5,2,boardPos.z-4.75},
+    position          = {
+      boardPos.x + zones.graveyard.x,
+      2,
+      boardPos.z + zones.graveyard.z
+    },
     rotation          = self.getRotation(),
     scale             = {4,2,5},
     sound             = false,
@@ -197,7 +216,11 @@ function spawnZones()
 
   mainDeckZone = spawnObject({
     type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
-    position          = {boardPos.x+17.5,2,boardPos.z+1.5},
+    position          = {
+      boardPos.x + zones.mainDeck.x,
+      2,
+      boardPos.z + zones.mainDeck.z
+    },
     rotation          = self.getRotation(),
     scale             = {4,2,5},
     sound             = false,
@@ -206,7 +229,11 @@ function spawnZones()
 
   banishmentZone = spawnObject({
     type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
-    position          = {boardPos.x+17.5,2,boardPos.z+7.75},
+    position          = {
+      boardPos.x + zones.banishment.x,
+      2,
+      boardPos.z + zones.banishment.z
+    },
     rotation          = self.getRotation(),
     scale             = {4,2,5},
     sound             = false,
@@ -215,12 +242,17 @@ function spawnZones()
 
   materialDeckZone = spawnObject({
     type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
-    position          = {boardPos.x-17.5,2,boardPos.z+1.5},
+    position          = {
+      boardPos.x + zones.materialDeck.x,
+      2,
+      boardPos.z + zones.materialDeck.z
+    },
     rotation          = self.getRotation(),
     scale             = {4,2,5},
     sound             = false,
     snap_to_grid      = false,
   })
+
 end
 
 function setSizePosistionAndRotation()
