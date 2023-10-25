@@ -17,7 +17,7 @@ local zones = {
   sideboard = {
     x = -17.5,
     y = 3,
-    z = 1.5
+    z = 7.5
   },
   materialDeck = {
     x = -17.5,
@@ -89,14 +89,29 @@ function onImportDeckButtonPressed()
           Global.call("importDecks", {
             decks=json.cards,
             mainDeck={
-              posistion={x = deckAreas.main.x,y = deckAreas.main.y,z = deckAreas.main.z},
-              rotation = self.getRotation()},
+              posistion={
+                x = self.getPosition().x + zones.mainDeck.x,
+                y = self.getPosition().y + zones.mainDeck.y,
+                z = self.getPosition().z + zones.mainDeck.z
+              },
+              rotation = self.getRotation().y
+            },
             materialDeck={
-              posistion={x = deckAreas.material.x,y = deckAreas.material.y,z = deckAreas.material.z},
-              rotation = self.getRotation()},
+              posistion={
+                x = self.getPosition().x + zones.materialDeck.x,
+                y = self.getPosition().y + zones.materialDeck.y,
+                z = self.getPosition().z + zones.materialDeck.z
+              },
+              rotation = self.getRotation().y
+            },
             sideDeck={
-              posistion={x = deckAreas.side.x,y = deckAreas.side.y,z = deckAreas.side.z},
-              rotation = self.getRotation()}
+              posistion={
+                x = self.getPosition().x + zones.sideboard.x,
+                y = self.getPosition().y + zones.sideboard.y,
+                z = self.getPosition().z + zones.sideboard.z
+              },
+              rotation = self.getRotation().y
+            }
           })
 
           -- Hide Import Button UI
@@ -182,7 +197,7 @@ function spawnZones()
   end
 
   fieldZone = spawnObject({
-    type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
+    type              = 'ScriptingTrigger',
     position          = {
       boardPos.x,
       2,
@@ -195,7 +210,7 @@ function spawnZones()
   })
 
   memoryZone = spawnObject({
-    type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
+    type              = 'ScriptingTrigger',
     position          = {
       boardPos.x,
       2,
@@ -208,7 +223,7 @@ function spawnZones()
   })
 
   graveyardZone = spawnObject({
-    type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
+    type              = 'ScriptingTrigger',
     position          = {
       boardPos.x + (zones.graveyard.x * mod),
       2,
@@ -221,7 +236,7 @@ function spawnZones()
   })
 
   mainDeckZone = spawnObject({
-    type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
+    type              = 'ScriptingTrigger',
     position          = {
       boardPos.x + (zones.mainDeck.x * mod),
       2,
@@ -234,7 +249,7 @@ function spawnZones()
   })
 
   banishmentZone = spawnObject({
-    type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
+    type              = 'ScriptingTrigger',
     position          = {
       boardPos.x + (zones.banishment.x * mod),
       2,
@@ -247,7 +262,7 @@ function spawnZones()
   })
 
   materialDeckZone = spawnObject({
-    type              = 'ScriptingTrigger', -- ScriptingTrigger is a scripting zone
+    type              = 'ScriptingTrigger',
     position          = {
       boardPos.x + (zones.materialDeck.x * mod),
       2,
