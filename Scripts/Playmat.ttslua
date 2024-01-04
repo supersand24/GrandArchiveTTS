@@ -277,7 +277,7 @@ end
 function onLoad()
 
   --Prevent ALT Interaction
-  self.interactable = true
+  self.interactable = false
 
   spawnZones()
   setSizePosistionAndRotation()
