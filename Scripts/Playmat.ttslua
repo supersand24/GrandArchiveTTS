@@ -45,19 +45,13 @@ end
 --When the Import Deck Button is pressed.
 function onImportDeckButtonPressed()
 
-  if Global.call("stringStartsWith",{string=deckURL,startsWith="https://"}) or Global.call("stringStartsWith",{string=deckURL,startsWith="build"}) or Global.call("stringStartsWith",{string=deckURL,startsWith="@"}) then
+  --Append http://
+  if Global.call("stringStartsWith",{string=deckURL,startsWith="https://"}) == false then
+    deckURL = "https://" .. deckURL
+  end
 
-    --Append http://build.silvie.org/ if it isn't there or properly formatted.
-    if Global.call("stringStartsWith",{string=deckURL,startsWith="https://build.silvie.org/"}) == false and Global.call("stringStartsWith",{string=deckURL,startsWith="https://build-v2.silvie.org/"}) == false then
-      log("Deck url didn't have the correct header.")
-      if Global.call("stringStartsWith",{string=deckURL,startsWith="build.silvie.org/"}) or Global.call("stringStartsWith",{string=deckURL,startsWith="build-v2.silvie.org/"}) then
-        log("Adding https:// to " .. deckURL)
-        deckURL = "https://" .. deckURL
-      else
-        log("Adding https:// to " .. deckURL)
-        deckURL = "https://build-v2.silvie.org/" .. deckURL
-      end
-    end
+  --Silvie
+  if Global.call("stringStartsWith",{string=deckURL,startsWith="https://build"}) then
 
     log("Importing " .. deckURL)
 
@@ -66,66 +60,65 @@ function onImportDeckButtonPressed()
       deckURL = deckURL .. "?format=json"
     end
 
-    --Get Deck from URL
-    WebRequest.get(deckURL, function(request)
-      if request.is_error then
-        log(request.error)
+  --Shout at your decks
+  elseif Global.call("stringStartsWith",{string=deckURL,startsWith="https://www.shout"}) then
+    --Sub http://www.shoutatyourdecks.com/decks/ http://www.shoutatyourdecks.com/api/
+    if Global.call("stringStartsWith",{string=deckURL,startsWith="https://www.shoutatyourdecks.com/api"}) == false then
+      if Global.call("stringStartsWith",{string=deckURL,startsWith="https://www.shoutatyourdecks.com/decks"}) then
+        --If doesn't end in "/api/" and ends in "/decks/" change "/decks/" to "/api/"
+        deckURL = deckURL:gsub("/decks/","/api/")
       else
+        broadcastToColor("Invalid Shout At Your Decks Import Link", playerColor, {255,0,0})
+        return
+      end
+    end
+  else
+    broadcastToColor("Unknown Deck Import Link", playerColor, {255,0,0})
+    return
+  end
 
-        json = JSON.decode(request.text)
+  --Get Deck from URL
+  WebRequest.get(deckURL, function(request)
+    if request.is_error then
+      log(request.error)
+    else
 
-        --Check for Error from silve.org
-        if json.error ~= nil then
-          log(json.error)
-          if json.error == "silvie/bad-request" then
-            broadcastToColor("Could not find a Deck under that URL!", playerColor, {255,0,0})
-          else
-            broadcastToColor("Unknown Error!", playerColor, {255,0,0})
-          end
+      json = JSON.decode(request.text)
+
+      --Check for Error from silve.org
+      if json.error ~= nil then
+        log(json.error)
+        if json.error == "silvie/bad-request" then
+          broadcastToColor("Could not find a Deck under that URL!", playerColor, {255,0,0})
         else
-          --Start Spawning Cards
-          broadcastToColor("Importing " .. json.name .. " from " .. json.creator, playerColor, {255,255,255})
-
-          Global.call("importDecks", {
-            decks=json.cards,
-            mainDeck={
-              posistion={
-                x = self.getPosition().x + zones.mainDeck.x,
-                y = self.getPosition().y + zones.mainDeck.y,
-                z = self.getPosition().z + zones.mainDeck.z
-              },
-              rotation = self.getRotation().y
-            },
-            materialDeck={
-              posistion={
-                x = self.getPosition().x + zones.materialDeck.x,
-                y = self.getPosition().y + zones.materialDeck.y,
-                z = self.getPosition().z + zones.materialDeck.z
-              },
-              rotation = self.getRotation().y
-            },
-            sideDeck={
-              posistion={
-                x = self.getPosition().x + zones.sideboard.x,
-                y = self.getPosition().y + zones.sideboard.y,
-                z = self.getPosition().z + zones.sideboard.z
-              },
-              rotation = self.getRotation().y
-            }
-          })
-
-          -- Hide Import Button UI
-          self.UI.hide(string.lower(playerColor) .. "Panel")
-
+          broadcastToColor("Unknown Error!", playerColor, {255,0,0})
         end
+      else
+        --Start Spawning Cards
+        --broadcastToColor("Importing " .. json.name .. " from " .. json.creator, playerColor, {255,255,255})
+
+        Global.call("importDecks", {
+          decks=json.cards,
+          mainDeck={
+            posistion={x = deckAreas.main.x,y = deckAreas.main.y,z = deckAreas.main.z},
+            rotation = deckAreas.main.rotation},
+          materialDeck={
+            posistion={x = deckAreas.material.x,y = deckAreas.material.y,z = deckAreas.material.z},
+            rotation = deckAreas.material.rotation},
+          sideDeck={
+            posistion={x = deckAreas.side.x,y = deckAreas.side.y,z = deckAreas.side.z},
+            rotation = deckAreas.side.rotation}
+        })
+
+        -- Hide Import Button UI
+        onCloseDeckImportButtonPressed()
 
       end
 
-    end)
+    end
 
-  else
-    broadcastToColor("URL is incorrect, make sure you didn't add any extra characters.", playerColor, {255,0,0})
-  end
+  end)
+
 end
 
 function onCloseDeckImportButtonPressed()
