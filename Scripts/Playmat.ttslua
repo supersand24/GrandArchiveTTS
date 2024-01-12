@@ -1,29 +1,34 @@
 local zones = {
   banishment = {
-    x = 17.5,
+    x = -18.3,
     y = 3,
-    z = 7.5
+    z = -6.6
   },
   mainDeck = {
-    x = 17.5,
+    x = -17.6,
     y = 3,
-    z = 1.5
+    z = -1.2
   },
   graveyard = {
-    x = 17.5,
+    x = -17.6,
     y = 3,
-    z = -4.75
+    z = 4.75
   },
-  sideboard = {
-    x = -17.5,
+  tokens = {
+    x = 18.3,
     y = 3,
-    z = 7.5
+    z = -6.6
   },
   materialDeck = {
-    x = -17.5,
+    x = 17.6,
     y = 3,
-    z = 1.5
-  }
+    z = -1.2
+  },
+  sideboard = {
+    x = 17.6,
+    y = 3,
+    z = 4.75
+  },
 }
 
 local fieldZone = nil
@@ -293,78 +298,85 @@ end
 function onLoad()
 
   --Prevent ALT Interaction
-  self.interactable = false
+  self.interactable = true
 
   spawnZones()
   setSizePosistionAndRotation()
 
-  leftCol = 1.455
-  rightCol = -1.455
-  midRow = -0.12
-  boardCenter = 0
-
   snapPoints = {
+
+      -- Left Side
+
+      -- Damage Taken Counter
+      { position = { (zones.tokens.x / self.getScale().x), 0, (zones.tokens.z / self.getScale().z) - 0.3 },
+        rotation = {0,180,0},
+        rotation_snap = true,
+        tags = {"Game Counter"}
+      },
+
+      -- Tokens
+      { position = { (zones.tokens.x / self.getScale().x), 0, (zones.tokens.z / self.getScale().z) },
+        rotation = {0,270,0},
+        rotation_snap = true
+      },
+
       -- Material Deck
-      { position = {leftCol,0,midRow},
+      { position = { (zones.materialDeck.x / self.getScale().x), 0, (zones.materialDeck.z / self.getScale().z) },
         rotation = {0,0,0},
         rotation_snap = true
       },
 
       -- Side Deck
-      { position = {leftCol,0,-0.58},
-        rotation = {0,90,0},
-        rotation_snap = true
-      },
-
-      -- Damage Taken Counter
-      { position = {leftCol,0,midRow + 0.35},
-        rotation = {0,180,0},
-        rotation_snap = true,
-        tags = {"Game Counter"}
-      },
-
-      -- Main Deck
-      { position = {rightCol,0,midRow},
+      { position = { (zones.sideboard.x / self.getScale().x), 0, (zones.sideboard.z / self.getScale().z) },
         rotation = {0,0,0},
         rotation_snap = true
       },
 
-      -- Draw Counter
-      { position = {rightCol - 0.25,0,midRow},
-        rotation = {0,270,0},
-        rotation_snap = true
-      },
+      -- Right Side
 
-      -- Graveyards
-      { position = {rightCol,0,0.4},
-        rotation = {0,0,0},
-        rotation_snap = true
-      },
-
-      -- Graveyard Floating Memory Counter
-      { position = {rightCol,0,0.7},
-        rotation = {0,180,0},
-        rotation_snap = true,
-        tags = {"Game Counter"}
-      },
-
-      -- Graveyard Etc Counter
-      { position = {rightCol,0,0.9},
+      -- Banishment Etc Counter
+      { position = { (zones.mainDeck.x / self.getScale().x), 0, (zones.banishment.z / self.getScale().z) - 0.25 },
         rotation = {0,180,0},
         rotation_snap = true,
         tags = {"Game Counter"}
       },
 
       -- Banishment
-      { position = {rightCol,0,-0.58},
+      { position = { (zones.banishment.x / self.getScale().x), 0, (zones.banishment.z / self.getScale().z) },
         rotation = {0,90,0},
         rotation_snap = true
       },
 
-      -- Banishment Etc Counter
-      { position = {rightCol,0,-0.88},
+      -- Main Deck
+      { position = { (zones.mainDeck.x / self.getScale().x), 0, (zones.mainDeck.z / self.getScale().z) },
+        rotation = {0,0,0},
+        rotation_snap = true
+      },
+
+      -- Draw Counter
+      { position = { (zones.mainDeck.x / self.getScale().x) - 0.25, 0, (zones.mainDeck.z / self.getScale().z) },
+        rotation = {0,270,0},
+        rotation_snap = true,
+        tags = {"Game Counter"}
+      },
+
+      -- Graveyard
+      { position = { (zones.graveyard.x / self.getScale().x), 0, (zones.graveyard.z / self.getScale().z) },
+        rotation = {0,0,0},
+        rotation_snap = true
+      },
+
+      -- Graveyard Floating Memory Counter
+      { position = { (zones.graveyard.x / self.getScale().x), 0, (zones.graveyard.z / self.getScale().z) + 0.3 },
         rotation = {0,180,0},
         rotation_snap = true,
+        tags = {"Game Counter"}
+      },
+
+      -- Graveyard Etc Counter
+      { position = { (zones.graveyard.x / self.getScale().x), 0, (zones.graveyard.z / self.getScale().z) + 0.5 },
+        rotation = {0,180,0},
+       rotation_snap = true,
         tags = {"Game Counter"}
       },
 
@@ -380,7 +392,7 @@ function onLoad()
   fieldCardSpacing = 0.175
   for _, row in ipairs(fieldRow) do
     for i=-6, 6 do
-      snapPoints[#snapPoints + 1] = { position = {boardCenter + fieldCardSpacing*i,0,row},
+      snapPoints[#snapPoints + 1] = { position = {fieldCardSpacing*i,0,row},
                                       rotation = {0,0,0},
                                       rotation_snap = false,
                                       tags = {"Card"}
@@ -395,7 +407,7 @@ function onLoad()
   memoryCardSpacing = 0.135
   for _, row in ipairs(memoryRow) do
     for i=-8, 8 do
-      snapPoints[#snapPoints + 1] = { position = {boardCenter + memoryCardSpacing*i,0,row},
+      snapPoints[#snapPoints + 1] = { position = {memoryCardSpacing*i,0,row},
                                       rotation = {0,0,0},
                                       rotation_snap = true,
                                       tags = {"Card"}
