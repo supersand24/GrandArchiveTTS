@@ -233,38 +233,44 @@ function onObjectEnterZone(zone, object)
 end
 
 function importDecks(params)
+
+  --log(params.mainDeck)
+  --log(params.materialDeck)
+  --log(params.sideDeck)
+
   --Main Deck
   for c,card in pairs(params.decks.main) do
     for i=1, card.quantity do
-      spawnGrandArchiveCard(card.name, card.image, params.mainDeck.posistion.x, params.mainDeck.posistion.y, params.mainDeck.posistion.z, params.mainDeck.rotation)
+      spawnGrandArchiveCard(card.name, card.image, params.mainDeck.position, params.mainDeck.rotation)
     end
   end
 
   --Material Deck
   for c,card in pairs(params.decks.material) do
     for i=1, card.quantity do
-      spawnGrandArchiveCard(card.name, card.image, params.materialDeck.posistion.x, params.materialDeck.posistion.y, params.materialDeck.posistion.z, params.materialDeck.rotation)
+      spawnGrandArchiveCard(card.name, card.image, params.materialDeck.position, params.materialDeck.rotation)
     end
   end
 
   --Side Deck
   for c,card in pairs(params.decks.sideboard) do
     for i=1, card.quantity do
-      spawnGrandArchiveCard(card.name, card.image, params.sideDeck.posistion.x, params.sideDeck.posistion.y, params.sideDeck.posistion.z, params.sideDeck.rotation)
+      spawnGrandArchiveCard(card.name, card.image, params.sideDeck.position, params.sideDeck.rotation)
     end
   end
 end
 
-function spawnGrandArchiveCard(name, image, x, y, z, rot)
-  object = spawnObjectData({
+function spawnGrandArchiveCard(name, image, pos, rot)
+
+  spawnObjectData({
     data = {
         Name = "CardCustom",
         Transform = {
-            posX = x,
-            posY = y,
-            posZ = z,
+            posX = pos.x,
+            posY = pos.y,
+            posZ = pos.z,
             rotX = 0,
-            rotY = rot,
+            rotY = rot.y,
             rotZ = 180,
             scaleX = 1.42055011,
             scaleY = 1,
@@ -285,6 +291,7 @@ function spawnGrandArchiveCard(name, image, x, y, z, rot)
         }
     }
   })
+
 end
 
 function onPlayerAction(player, action, targets)

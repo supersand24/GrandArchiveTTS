@@ -32,6 +32,7 @@ local graveyardZone = nil
 local mainDeckZone = nil
 local banishmentZone = nil
 local materialDeckZone = nil
+local sideDeckZone = nil
 
 local playerColor = "Blue"
 
@@ -52,9 +53,6 @@ function onImportDeckButtonPressed()
 
   --Silvie
   if Global.call("stringStartsWith",{string=deckURL,startsWith="https://build"}) then
-
-    log("Importing " .. deckURL)
-
     --Append ?format=json if it isn't there.
     if Global.call("stringEndsWith",{string=deckURL,endsWith="?format=json"}) == false then
       deckURL = deckURL .. "?format=json"
@@ -76,6 +74,8 @@ function onImportDeckButtonPressed()
     broadcastToColor("Unknown Deck Import Link", playerColor, {255,0,0})
     return
   end
+
+  log("Importing " .. deckURL)
 
   --Get Deck from URL
   WebRequest.get(deckURL, function(request)
@@ -100,14 +100,17 @@ function onImportDeckButtonPressed()
         Global.call("importDecks", {
           decks=json.cards,
           mainDeck={
-            posistion={x = deckAreas.main.x,y = deckAreas.main.y,z = deckAreas.main.z},
-            rotation = deckAreas.main.rotation},
+            position = mainDeckZone.getPosition(),
+            rotation = mainDeckZone.getRotation()
+          },
           materialDeck={
-            posistion={x = deckAreas.material.x,y = deckAreas.material.y,z = deckAreas.material.z},
-            rotation = deckAreas.material.rotation},
+            position = materialDeckZone.getPosition(),
+            rotation = materialDeckZone.getRotation()
+          },
           sideDeck={
-            posistion={x = deckAreas.side.x,y = deckAreas.side.y,z = deckAreas.side.z},
-            rotation = deckAreas.side.rotation}
+            position = sideDeckZone.getPosition(),
+            rotation = sideDeckZone.getRotation()
+          }
         })
 
         -- Hide Import Button UI
@@ -260,6 +263,19 @@ function spawnZones()
       boardPos.x + (zones.materialDeck.x * mod),
       2,
       boardPos.z + (zones.materialDeck.z * mod)
+    },
+    rotation          = self.getRotation(),
+    scale             = {4,2,5},
+    sound             = false,
+    snap_to_grid      = false,
+  })
+
+  sideDeckZone = spawnObject({
+    type              = 'ScriptingTrigger',
+    position          = {
+      boardPos.x + (zones.sideboard.x * mod),
+      2,
+      boardPos.z + (zones.sideboard.z * mod)
     },
     rotation          = self.getRotation(),
     scale             = {4,2,5},
