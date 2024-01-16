@@ -33,13 +33,15 @@ local zones = {
 
 local fieldZone = nil
 local memoryZone = nil
-local graveyardZone = nil
-local mainDeckZone = nil
 local banishmentZone = nil
+local mainDeckZone = nil
+local graveyardZone = nil
+local tokensZone = nil
 local materialDeckZone = nil
 local sideDeckZone = nil
 
-local playerColor = "Blue"
+local playerColor = "Green"
+local flippedBoard = false
 
 local deckURL = "https://build.silvie.org/"
 
@@ -191,10 +193,10 @@ end
 function spawnZones()
   boardPos = self.getPosition()
 
-  if self.getRotation().y > 90 then
-    mod = 1
-  else
+  if flippedBoard then
     mod = -1
+  else
+    mod = 1
   end
 
   fieldZone = spawnObject({
@@ -257,7 +259,20 @@ function spawnZones()
       boardPos.z + (zones.banishment.z * mod)
     },
     rotation          = self.getRotation(),
-    scale             = {4,2,5},
+    scale             = {5,2,4},
+    sound             = false,
+    snap_to_grid      = false,
+  })
+
+  tokensZone = spawnObject({
+    type              = 'ScriptingTrigger',
+    position          = {
+      boardPos.x + (zones.tokens.x * mod),
+      2,
+      boardPos.z + (zones.tokens.z * mod)
+    },
+    rotation          = self.getRotation(),
+    scale             = {5,2,4},
     sound             = false,
     snap_to_grid      = false,
   })
@@ -290,18 +305,12 @@ function spawnZones()
 
 end
 
-function setSizePosistionAndRotation()
-  self.setScale({12,1,12})
-  self.setRotation({0,180,0})
-end
-
 function onLoad()
 
   --Prevent ALT Interaction
   self.interactable = true
 
   spawnZones()
-  setSizePosistionAndRotation()
 
   snapPoints = {
 
