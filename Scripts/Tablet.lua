@@ -38,7 +38,7 @@ function onGenerateCardButtonPressed()
                         name = cardEdition.name,
                         image = imageURL,
                         pos = tokensZone.getPosition(),
-                        rot = {y = 90}
+                        rot = {y = (playmat.getRotation().y - 90)}
                     })
 
                 else
