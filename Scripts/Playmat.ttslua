@@ -324,7 +324,7 @@ function onLoad()
   --Prevent ALT Interaction
   self.interactable = true
 
-  spawnZones()
+  self.addContextMenuItem("Spawn Zones", spawnZones)
 
   snapPoints = {
 
