@@ -1,15 +1,15 @@
 <Panel
     id="blueTablet"
-    position="0 0 0"
+    position="0 750 0"
     rotation="0 0 180"
-    scale="1"
+    width="1000" height="250"
+    color="Black"
     visibility="Blue"
 >
-    <Button width="1000" height="250" position="0 -750 0"
+    <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
         onClick="onGenerateCardButtonPressed"
         fontSize="120"
-        fontStyle="Bold"
-    >
-        Generate Card
-    </Button>
+    >Generate Card</Button>
 </Panel>
