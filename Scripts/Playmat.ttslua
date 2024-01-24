@@ -1,4 +1,14 @@
 local zones = {
+  field = {
+    x = 0,
+    y = 3,
+    z = -5.5
+  },
+  memory = {
+    x = 0,
+    y = 3,
+    z = -7.25
+  },
   banishment = {
     x = -18.3,
     y = 3,
@@ -206,9 +216,9 @@ function spawnZones()
   fieldZone = spawnObject({
     type              = 'ScriptingTrigger',
     position          = {
-      boardPos.x,
+      boardPos.x + (zones.field.x * mod),
       2,
-      boardPos.z + (5.5 * mod)
+      boardPos.z + (zones.field.z * mod)
     },
     rotation          = self.getRotation(),
     scale             = {30,2,15},
@@ -219,9 +229,9 @@ function spawnZones()
   memoryZone = spawnObject({
     type              = 'ScriptingTrigger',
     position          = {
-      boardPos.x,
+      boardPos.x + (zones.memory.x * mod),
       2,
-      boardPos.z - (7.25 * mod)
+      boardPos.z - (zones.memory.z * mod)
     },
     rotation          = self.getRotation(),
     scale             = {30,2,10},
