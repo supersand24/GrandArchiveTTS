@@ -40,10 +40,14 @@ local tokensZone = nil
 local materialDeckZone = nil
 local sideDeckZone = nil
 
-local playerColor = "Green"
-local flippedBoard = false
+local playerColor = "Blue"
+local flippedBoard = true
 
 local deckURL = "https://build.silvie.org/"
+
+function getTokensZone()
+    return tokensZone
+end
 
 function syncTextFields(player, value, id)
   --Set deckURL while trimming whitespace.
