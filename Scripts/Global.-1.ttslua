@@ -1,82 +1,52 @@
 --[[
 Grand Archive TCG
 Grand Archive created by Weebs of the Shore LLC, all rights reserved.
-Updated Mod Created by supersand24 (supersand24#2424 on Discord)
+Updated Mod Created by supersand24 (supersand24 on Discord)
 Original Mod Created by Chris Orrell (Australian TCG)
 
 Grand Archive Website : https://www.grandarchivetcg.com/
 Grand Archive Discord : https://discord.gg/8gM49zN2XD
-Grand Archive Kickstarter : https://www.kickstarter.com/projects/weebs/grand-archive-tcg
 
-Version 0.9.1
+Version 1.0
 
 --]]
-
---RED_FIELD = '422aa0'
---RED_MAIN_DECK = '899ae6'
---RED_BANISHMENT = '759524'
---RED_GRAVEYARD = '130901'
---RED_MEMORY = '7e5cde'
---RED_MATERIAL_DECK = '7b4023'
---RED_SIDE_DECK = 'bb7467'
---RED_HAND = '263e95'
 
 RED_HANDBOOK = '477299'
 RED_TABLET = '55c6df'
 RED_TOKENS = 'c8c527'
 RED_DRAW_COUNTER = '8f73ae'
-
-
---BLUE_FIELD = '64a31a'
---BLUE_MAIN_DECK = '4b601d'
---BLUE_BANISHMENT = 'bf0bf6'
---BLUE_GRAVEYARD = '3f5b96'
---BLUE_MEMORY = 'a78eb3'
---BLUE_MATERIAL_DECK = '1900d7'
---BLUE_SIDE_DECK = 'cc55fc'
---BLUE_HAND = 'c8c094'
+RED_PLAYMAT = 'dacc34'
 
 BLUE_HANDBOOK = 'df0233'
 BLUE_TABLET = '6ceec1'
 BLUE_TOKENS = '96e172'
 BLUE_DRAW_COUNTER = '1d4bc4'
-
-
---GREEN_FIELD = '12cd8a'
---GREEN_MAIN_DECK = '252ffb'
---GREEN_BANISHMENT = 'd85b34'
---GREEN_GRAVEYARD = '8ebe95'
---GREEN_MEMORY = '42468c'
---GREEN_MATERIAL_DECK = '36df7d'
---GREEN_SIDE_DECK = '6099b9'
---GREEN_HAND = 'c19dc8'
+BLUE_PLAYMAT = '609cf2'
 
 GREEN_HANDBOOK = '6eec32'
 GREEN_TABLET = '89c0cf'
 GREEN_TOKENS = 'd3281b'
 GREEN_DRAW_COUNTER = '760afb'
-
-
---YELLOW_FIELD = '402694'
---YELLOW_MAIN_DECK = '63754b'
---YELLOW_BANISHMENT = '85d7ce'
---YELLOW_GRAVEYARD = '49513d'
---YELLOW_MEMORY = 'dca290'
---YELLOW_MATERIAL_DECK = '05c656'
---YELLOW_SIDE_DECK = '2a10a7'
---YELLOW_HAND = '1ac84e'
+GREEN_PLAYMAT = 'ebfacc'
 
 YELLOW_HANDBOOK = 'a6c2e6'
 YELLOW_TABLET = '1a66e5'
 YELLOW_TOKENS = '38fce2'
 YELLOW_DRAW_COUNTER = '167ada'
-
+YELLOW_PLAYMAT = 'b90a1d'
 
 privacyZones = {
   Red = {"Blue","Green","Yellow"},
   Blue = {"Red","Green","Yellow"},
   Green = {"Red","Blue","Yellow"},
   Yellow = {"Red","Blue","Green"}
+}
+
+playmats = {
+  Red = 'dacc34',
+  Blue = '609cf2',
+  Green = 'ebfacc',
+  Yellow = 'b90a1d'
 }
 
 --TTS is lacking in this area...
@@ -234,53 +204,53 @@ end
 
 function importDecks(params)
 
-  --log(params.mainDeck)
-  --log(params.materialDeck)
-  --log(params.sideDeck)
+  log("Importing Main")
 
   --Main Deck
   for c,card in pairs(params.decks.main) do
     for i=1, card.quantity do
-      spawnGrandArchiveCard(card.name, card.image, params.mainDeck.position, params.mainDeck.rotation)
+      spawnGrandArchiveCard({name = card.name, image = card.image, pos = params.mainDeck.position, rot = params.mainDeck.rotation})
     end
   end
+
+  log("Importing Material")
 
   --Material Deck
   for c,card in pairs(params.decks.material) do
     for i=1, card.quantity do
-      spawnGrandArchiveCard(card.name, card.image, params.materialDeck.position, params.materialDeck.rotation)
+      spawnGrandArchiveCard({name = card.name, image = card.image, pos = params.materialDeck.position, rot = params.materialDeck.rotation})
     end
   end
 
   --Side Deck
   for c,card in pairs(params.decks.sideboard) do
     for i=1, card.quantity do
-      spawnGrandArchiveCard(card.name, card.image, params.sideDeck.position, params.sideDeck.rotation)
+      spawnGrandArchiveCard({name = card.name, image = card.image, pos = params.sideDeck.position, rot = params.sideDeck.rotation})
     end
   end
 end
 
-function spawnGrandArchiveCard(name, image, pos, rot)
+function spawnGrandArchiveCard(params)
 
   spawnObjectData({
     data = {
         Name = "CardCustom",
         Transform = {
-            posX = pos.x,
-            posY = pos.y,
-            posZ = pos.z,
+            posX = params.pos.x,
+            posY = params.pos.y,
+            posZ = params.pos.z,
             rotX = 0,
-            rotY = rot.y,
+            rotY = params.rot.y,
             rotZ = 180,
             scaleX = 1.42055011,
             scaleY = 1,
             scaleZ = 1.42055011
         },
-        Nickname = name,
+        Nickname = params.name,
         CardID = 10000,
         CustomDeck = {
           [100] = {
-            FaceURL = image,
+            FaceURL = params.image,
             BackURL = "https://img.silvie.org/cdn/deck-builder/card-back.png",
             NumWidth = 1,
             NumHeight = 1,
@@ -345,29 +315,11 @@ function onLoad(save_state)
   end
   --]]
 
-  --getObjectFromGUID(RED_FIELD).setVar("owner", "Red")
-  --getObjectFromGUID(RED_MEMORY).setVar("owner", "Red")
-  --getObjectFromGUID(RED_GRAVEYARD).setVar("owner", "Red")
-  --getObjectFromGUID(RED_BANISHMENT).setVar("owner", "Red")
-  --getObjectFromGUID(RED_MAIN_DECK).setVar("owner", "Red")
-  --getObjectFromGUID(RED_MATERIAL_DECK).setVar("owner", "Red")
-  --getObjectFromGUID(RED_SIDE_DECK).setVar("owner", "Red")
-  --getObjectFromGUID(RED_HAND).setVar("owner", "Red")
-
   getObjectFromGUID(RED_TABLET).setInvisibleTo(privacyZones["Red"])
   getObjectFromGUID(RED_HANDBOOK).setInvisibleTo(privacyZones["Red"])
   for _, bag in ipairs(getObjectFromGUID(RED_TOKENS).getObjects()) do
     bag.setInvisibleTo(privacyZones["Red"])
   end
-
-  --getObjectFromGUID(BLUE_FIELD).setVar("owner", "Blue")
-  --getObjectFromGUID(BLUE_MEMORY).setVar("owner", "Blue")
-  --getObjectFromGUID(BLUE_GRAVEYARD).setVar("owner", "Blue")
-  --getObjectFromGUID(BLUE_BANISHMENT).setVar("owner", "Blue")
-  --getObjectFromGUID(BLUE_MAIN_DECK).setVar("owner", "Blue")
-  --getObjectFromGUID(BLUE_MATERIAL_DECK).setVar("owner", "Blue")
-  --getObjectFromGUID(BLUE_SIDE_DECK).setVar("owner", "Blue")
-  --getObjectFromGUID(BLUE_HAND).setVar("owner", "Blue")
 
   getObjectFromGUID(BLUE_TABLET).setInvisibleTo(privacyZones["Blue"])
   getObjectFromGUID(BLUE_HANDBOOK).setInvisibleTo(privacyZones["Blue"])
@@ -375,29 +327,11 @@ function onLoad(save_state)
     bag.setInvisibleTo(privacyZones["Blue"])
   end
 
-  --getObjectFromGUID(GREEN_FIELD).setVar("owner", "Green")
-  --getObjectFromGUID(GREEN_MEMORY).setVar("owner", "Green")
-  --getObjectFromGUID(GREEN_GRAVEYARD).setVar("owner", "Green")
-  --getObjectFromGUID(GREEN_BANISHMENT).setVar("owner", "Green")
-  --getObjectFromGUID(GREEN_MAIN_DECK).setVar("owner", "Green")
-  --getObjectFromGUID(GREEN_MATERIAL_DECK).setVar("owner", "Green")
-  --getObjectFromGUID(GREEN_SIDE_DECK).setVar("owner", "Green")
-  --getObjectFromGUID(GREEN_HAND).setVar("owner", "Green")
-
   getObjectFromGUID(GREEN_TABLET).setInvisibleTo(privacyZones["Green"])
   getObjectFromGUID(GREEN_HANDBOOK).setInvisibleTo(privacyZones["Green"])
   for _, bag in ipairs(getObjectFromGUID(GREEN_TOKENS).getObjects()) do
     bag.setInvisibleTo(privacyZones["Green"])
   end
-
-  --getObjectFromGUID(YELLOW_FIELD).setVar("owner", "Yellow")
-  --getObjectFromGUID(YELLOW_MEMORY).setVar("owner", "Yellow")
-  --getObjectFromGUID(YELLOW_GRAVEYARD).setVar("owner", "Yellow")
-  --getObjectFromGUID(YELLOW_BANISHMENT).setVar("owner", "Yellow")
-  --getObjectFromGUID(YELLOW_MAIN_DECK).setVar("owner", "Yellow")
-  --getObjectFromGUID(YELLOW_MATERIAL_DECK).setVar("owner", "Yellow")
-  --getObjectFromGUID(YELLOW_SIDE_DECK).setVar("owner", "Yellow")
-  --getObjectFromGUID(YELLOW_HAND).setVar("owner", "Yellow")
 
   getObjectFromGUID(YELLOW_TABLET).setInvisibleTo(privacyZones["Yellow"])
   getObjectFromGUID(YELLOW_HANDBOOK).setInvisibleTo(privacyZones["Yellow"])
@@ -405,11 +339,35 @@ function onLoad(save_state)
     bag.setInvisibleTo(privacyZones["Yellow"])
   end
 
+  --Pay 1 Memory Card Keybind
+  addHotkey("Pay 1 Memory Card", function(playerColor, object, pointerPosition, isKeyUp)
+    local playmat = getObjectFromGUID(playmats[playerColor]).call("payOneMemoryCard")
+  end)
+
+  --Reveal Random Memory Card Keybind
+  addHotkey("Reveal Random Memory Card", function(playerColor, object, pointerPosition, isKeyUp)
+    local playmat = getObjectFromGUID(playmats[playerColor]).call("revealRandomMemoryCard")
+  end)
+
+  --Recollect Memory Keybind
+  addHotkey("Recollect Memory", function(playerColor, object, pointerPosition, isKeyUp)
+    local playmat = getObjectFromGUID(playmats[playerColor]).call("recollectMemory")
+  end)
+
+  --Hide Memory Buttons Keybind
+  addHotkey("Hide Memory Buttons", function(playerColor, object, pointerPosition, isKeyUp)
+    local playmat = getObjectFromGUID(playmats[playerColor]).call("hideMemoryButtons")
+  end)
+
 end
 
 --Returns true if str starts with start.
 function stringStartsWith(params)
    return params.string:sub(1, #params.startsWith) == params.startsWith
+end
+
+function removeStringFromStart(params)
+    return params.string:sub(#params.remove + 1)
 end
 
 --Returns true if str end with ending.
