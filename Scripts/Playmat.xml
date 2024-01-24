@@ -1,59 +1,86 @@
 <Panel
-  id="bluePanel"
-  width="220" height="100"
-  position="0 -50 -15"
+  id="blueField"
+  position="0 0 -15"
   rotation="0 0 180"
+  width="300" height="200"
   scale="0.1"
   visibility="Blue"
 >
-  <Button
-    width="200" height="200" position="750 -300 0"
-    onClick="onCloseDeckImportButtonPressed"
-    fontSize="120"
-    fontStyle="Bold"
-    >X</Button>
-  <Button
-    width="1200" height="300" position="0 -300 0"
-    onClick="onImportDeckButtonPressed"
-    fontSize="160"
-    fontStyle="Bold"
-  >Import Decks</Button>
-  <InputField
-    width="2200" height="200" position="0 0 0"
-    fontSize="160"
-    fontStyle="Bold"
-    placeholder="https://build.silvie.org/"
-    onEndEdit="syncTextFields">
-  </InputField>
+  <!--DECK IMPORT-->
+  <VerticalLayout
+    id="blueDeckImport"
+    position="0 350 0"
+    width="2200"
+    height="500"
+    spacing="50"
+    childAlignment="MiddleCenter"
+  >
+    <InputField
+      colors="(#000000|#222222|#444444)"
+      textColor="#8A8A8A"
+      fontSize="160"
+      placeholder="Insert deck link here."
+      onEndEdit="syncTextFields"
+    ></InputField>
+    <HorizontalLayout
+      preferredHeight="200"
+      spacing="50"
+      padding="400 400 0 0"
+    >
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="160"
+        preferredWidth="1000"
+        onClick="importDeck"
+      >Import Decks</Button>
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="160"
+        preferredWidth="200"
+        onClick="hideDeckImport"
+      >X</Button>
+    </HorizontalLayout>
+  
+  </VerticalLayout>
+
+  <!--MEMORY BUTTONS-->
+  <Panel
+    position="0 -950 0"
+    width="2500"
+    spacing="20"
+  >
+    <Button
+      position="-1400 0 0"
+      width="300"
+      colors="(#000000|#222222|#444444)"
+      textColor="#8A8A8A"
+      fontSize="100"
+      onClick="hideMemoryButtons"
+    >Hide</Button>
+    <HorizontalLayout
+      id="blueMemoryButtons"
+    >
+      <Button
+      colors="(#000000|#222222|#444444)"
+      textColor="#8A8A8A"
+      fontSize="100"
+      onClick="payOneMemoryCard"
+    >Pay 1 Memory</Button>
+    <Button
+      colors="(#000000|#222222|#444444)"
+      textColor="#8A8A8A"
+      fontSize="100"
+      onClick="revealRandomMemoryCard"
+    >Reveal Random</Button>
+    <Button
+      colors="(#000000|#222222|#444444)"
+      textColor="#8A8A8A"
+      fontSize="100"
+      onClick="recollectMemory"
+    >Recollect</Button>
+    </HorizontalLayout>
+  </Panel>
+
 </Panel>
-
-<HorizontalLayout
-  id="memoryButtons"
-  width="2500" height="150"
-  position="0 95 -15"
-  rotation="0 0 180"
-  scale="0.1"
-  spacing="20"
->
-    <Button
-      colors="(#000000|#222222|#888888)"
-      textColor="#FFFFFF"
-      fontSize="100"
-      onClick="onPayOneMemoryButtonPressed"
-      >Pay 1 Memory</Button>
-
-    <Button
-      colors="(#000000|#222222|#888888)"
-      textColor="#FFFFFF"
-      fontSize="100"
-      onClick="onRevealRandomButtonPressed"
-      >Reveal Random</Button>
-
-    <Button
-      colors="(#000000|#222222|#888888)"
-      textColor="#FFFFFF"
-      fontSize="100"
-      onClick="onRecollectButtonPressed"
-      >Recollect</Button>
-
-</HorizontalLayout>

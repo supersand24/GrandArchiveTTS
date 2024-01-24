@@ -50,6 +50,8 @@ local tokensZone = nil
 local materialDeckZone = nil
 local sideDeckZone = nil
 
+local memoryButtonsVisible = true
+
 local playerColor = "Blue"
 local flippedBoard = true
 
@@ -65,7 +67,13 @@ function syncTextFields(player, value, id)
 end
 
 --When the Import Deck Button is pressed.
-function onImportDeckButtonPressed()
+function importDeck()
+
+  --Error Handling
+  if mainDeckZone == nil then log("Main Deck Zone is nil.") return end
+  if materialDeckZone == nil then log("Material Deck Zone is nil.") return end
+  if sideDeckZone == nil then log("Side Deck Zone is nil.") return end
+  if tokensZone == nil then log("Tokens Zone is nil.") return end
 
   --Append http://
   if Global.call("stringStartsWith",{string=deckURL,startsWith="https://"}) == false then
@@ -135,7 +143,7 @@ function onImportDeckButtonPressed()
         })
 
         -- Hide Import Button UI
-        onCloseDeckImportButtonPressed()
+        hideDeckImport()
 
       end
 
@@ -145,15 +153,18 @@ function onImportDeckButtonPressed()
 
 end
 
-function onCloseDeckImportButtonPressed()
-  self.UI.hide(string.lower(playerColor) .. "Panel")
+function hideDeckImport()
+  self.UI.hide(string.lower(playerColor) .. "DeckImport")
 end
 
-function onReadyUpButtonPressed()
+function readyUp()
   Global.call("startGame")
 end
 
-function onPayOneMemoryButtonPressed()
+function payOneMemoryCard()
+
+  if memoryZone == nil then log("Memory Zone is nil.") return end
+
   local memoryCards = 0
   local memoryCheck = 0
 
@@ -174,7 +185,10 @@ function onPayOneMemoryButtonPressed()
   end
 end
 
-function onRevealRandomButtonPressed()
+function revealRandomMemoryCard()
+
+  if memoryZone == nil then log("Memory Zone is nil.") return end
+
   local memoryCards = 0
   local memoryCheck = 0
 
@@ -193,13 +207,28 @@ function onRevealRandomButtonPressed()
   end
 end
 
-function onRecollectButtonPressed()
+function recollectMemory()
+
+  if memoryZone == nil then log("Memory Zone is nil.") return end
+
   if (memoryZone.getObjects()) != nil then
     for _,item in ipairs(memoryZone.getObjects()) do
       if item.tag == "Card" then
         item.deal(1,playerColor)
       end
     end
+  end
+
+end
+
+function hideMemoryButtons()
+
+  memoryButtonsVisible = not memoryButtonsVisible
+
+  if memoryButtonsVisible then
+    self.UI.show(string.lower(playerColor) .. "MemoryButtons")
+  else
+    self.UI.hide(string.lower(playerColor) .. "MemoryButtons")
   end
 
 end
