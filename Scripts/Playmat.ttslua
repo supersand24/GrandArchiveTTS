@@ -88,17 +88,9 @@ function importDeck()
     end
 
   --Shout at your decks
-  elseif Global.call("stringStartsWith",{string=deckURL,startsWith="https://www.shout"}) then
-    --Sub http://www.shoutatyourdecks.com/decks/ http://www.shoutatyourdecks.com/api/
-    if Global.call("stringStartsWith",{string=deckURL,startsWith="https://www.shoutatyourdecks.com/api"}) == false then
-      if Global.call("stringStartsWith",{string=deckURL,startsWith="https://www.shoutatyourdecks.com/decks"}) then
-        --If doesn't end in "/api/" and ends in "/decks/" change "/decks/" to "/api/"
-        deckURL = deckURL:gsub("/decks/","/api/")
-      else
-        broadcastToColor("Invalid Shout At Your Decks Import Link", playerColor, {255,0,0})
-        return
-      end
-    end
+  elseif Global.call("stringStartsWith",{string=deckURL,startsWith="https://www.shout"}) or Global.call("stringStartsWith",{string=deckURL,startsWith="https://shout"}) then
+    --Sub http://shoutatyourdecks.com/decks/ -> http://shoutatyourdecks.com/api/
+    deckURL = deckURL:gsub("/decks/","/api/")
   else
     broadcastToColor("Unknown Deck Import Link", playerColor, {255,0,0})
     return
@@ -155,6 +147,59 @@ end
 
 function hideDeckImport()
   self.UI.hide(string.lower(playerColor) .. "DeckImport")
+end
+
+function showDeckImport()
+  self.UI.show(string.lower(playerColor) .. "DeckImport")
+end
+
+function resetPlayspace()
+
+  if fieldZone == nil then log("Field Zone is nil.") return end
+  if memoryZone == nil then log("Memory Zone is nil.") return end
+  if banishmentZone == nil then log("Banishment Zone is nil.") return end
+  if mainDeckZone == nil then log("Main Deck Zone is nil.") return end
+  if graveyardZone == nil then log("Graveyard Zone is nil.") return end
+  if tokensZone == nil then log("Tokens Zone is nil.") return end
+  if materialDeckZone == nil then log("Material Deck Zone is nil.") return end
+  if sideDeckZone == nil then log("Side Deck Zone is nil.") return end
+
+  for _, obj in pairs(fieldZone.getObjects()) do
+    if obj.type == "Card" or obj.type == "Deck" then
+      destroyObject(obj)
+    end
+  end
+
+  for _, obj in pairs(memoryZone.getObjects()) do
+    if obj.type == "Card" or obj.type == "Deck" then
+      destroyObject(obj)
+    end
+  end
+
+  for _, obj in pairs(banishmentZone.getObjects()) do
+    if obj.type == "Card" or obj.type == "Deck" then
+      destroyObject(obj)
+    end
+  end
+
+  for _, obj in pairs(mainDeckZone.getObjects()) do
+    if obj.type == "Card" or obj.type == "Deck" then
+      destroyObject(obj)
+    end
+  end
+
+  for _, obj in pairs(materialDeckZone.getObjects()) do
+    if obj.type == "Card" or obj.type == "Deck" then
+      destroyObject(obj)
+    end
+  end
+
+  for _, obj in pairs(sideDeckZone.getObjects()) do
+    if obj.type == "Card" or obj.type == "Deck" then
+      destroyObject(obj)
+    end
+  end
+
 end
 
 function readyUp()
