@@ -67,7 +67,6 @@ local trustOthers = true
 local memoryButtonsVisible = true
 
 local myPlayer = Player.Blue
-local playerColor = "Blue"
 local playerVisibilities = {
   mySide = { visible = "Blue|Yellow|Grey|Black", invisible = "Blue|Grey|Black"},
   oppositeSide = { visible = "Red|Green", invisible = "Pink"},
@@ -111,7 +110,7 @@ function importDeck()
     --Sub http://shoutatyourdecks.com/decks/ -> http://shoutatyourdecks.com/api/
     deckURL = deckURL:gsub("/decks/","/api/")
   else
-    broadcastToColor("Unknown Deck Import Link", playerColor, {255,0,0})
+    broadcastToColor("Unknown Deck Import Link", myPlayer.color, {255,0,0})
     return
   end
 
@@ -129,13 +128,13 @@ function importDeck()
       if json.error ~= nil then
         log(json.error)
         if json.error == "silvie/bad-request" then
-          broadcastToColor("Could not find a Deck under that URL!", playerColor, {255,0,0})
+          broadcastToColor("Could not find a Deck under that URL!", myPlayer.color, {255,0,0})
         else
-          broadcastToColor("Unknown Error!", playerColor, {255,0,0})
+          broadcastToColor("Unknown Error!", myPlayer.color, {255,0,0})
         end
       else
         --Start Spawning Cards
-        --broadcastToColor("Importing " .. json.name .. " from " .. json.creator, playerColor, {255,255,255})
+        --broadcastToColor("Importing " .. json.name .. " from " .. json.creator, myPlayer.color, {255,255,255})
 
         new = {x = tokensZone.getRotation().x, y = (tokensZone.getRotation().x-90), z = tokensZone.getRotation().z}
 
@@ -171,11 +170,11 @@ function importDeck()
 end
 
 function hideDeckImport()
-  self.UI.hide(string.lower(playerColor) .. "DeckImport")
+  self.UI.hide(string.lower(myPlayer.color) .. "DeckImport")
 end
 
 function showDeckImport()
-  self.UI.show(string.lower(playerColor) .. "DeckImport")
+  self.UI.show(string.lower(myPlayer.color) .. "DeckImport")
 end
 
 function resetPlayspace()
@@ -214,6 +213,12 @@ function resetPlayspace()
           destroyObject(obj)
         end
       end
+
+      for _, obj in pairs(graveyardZone.getObjects()) do
+        if obj.type == "Card" or obj.type == "Deck" then
+          destroyObject(obj)
+        end
+      end
     
       for _, obj in pairs(materialDeckZone.getObjects()) do
         if obj.type == "Card" or obj.type == "Deck" then
@@ -226,6 +231,11 @@ function resetPlayspace()
           destroyObject(obj)
         end
       end
+
+      for _, obj in pairs(myPlayer.getHandObjects(0)) do
+        destroyObject(obj)
+      end
+
     end)
 
 end
@@ -235,10 +245,10 @@ function toggleMagnets()
   snapPoints = getNewSnapPoints()
 
   if fieldMagnets then
-    broadcastToColor("Added Magnets to Field", playerColor, {255, 255, 255})
+    broadcastToColor("Added Magnets to Field", myPlayer.color, {255, 255, 255})
     addFieldMagnets(snapPoints)
   else
-    broadcastToColor("Removed Magnets from Field", playerColor, {255, 255, 255})
+    broadcastToColor("Removed Magnets from Field", myPlayer.color, {255, 255, 255})
   end
 
   fieldMagnets = not fieldMagnets
@@ -325,32 +335,32 @@ end
 
 function toggleTrustOthers()
   if trustOthers then
-    broadcastToColor("Hid Counter Buttons to Opponents", playerColor, {255, 255, 255})
-    self.UI.setAttribute(string.lower(playerColor) .. "DamageTakenCounterButtons", "visibility", playerColor)
-    self.UI.setAttribute(string.lower(playerColor) .. "BanishmentCardCounterButtons", "visibility", playerColor)
-    self.UI.setAttribute(string.lower(playerColor) .. "DrawCounterButton1", "visibility", playerColor)
-    self.UI.setAttribute(string.lower(playerColor) .. "DrawCounterButton2", "visibility", playerColor)
-    self.UI.setAttribute(string.lower(playerColor) .. "GraveyardFloatingCardCounterButton1", "visibility", playerColor)
-    self.UI.setAttribute(string.lower(playerColor) .. "GraveyardFloatingCardCounterButton2", "visibility", playerColor)
-    self.UI.setAttribute(string.lower(playerColor) .. "GraveyardCardCounterButtons", "visibility", playerColor)
+    broadcastToColor("Hid Counter Buttons to Opponents", myPlayer.color, {255, 255, 255})
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "DamageTakenCounterButtons", "visibility", myPlayer.color)
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "BanishmentCardCounterButtons", "visibility", myPlayer.color)
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "DrawCounterButton1", "visibility", myPlayer.color)
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "DrawCounterButton2", "visibility", myPlayer.color)
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "GraveyardFloatingCardCounterButton1", "visibility", myPlayer.color)
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "GraveyardFloatingCardCounterButton2", "visibility", myPlayer.color)
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "GraveyardCardCounterButtons", "visibility", myPlayer.color)
 
   else
-    broadcastToColor("Revealed Counter Buttons to Opponents", playerColor, {255, 255, 255})
-    self.UI.setAttribute(string.lower(playerColor) .. "DamageTakenCounterButtons", "visibility", "")
-    self.UI.setAttribute(string.lower(playerColor) .. "BanishmentCardCounterButtons", "visibility", "")
-    self.UI.setAttribute(string.lower(playerColor) .. "DrawCounterButton1", "visibility", "")
-    self.UI.setAttribute(string.lower(playerColor) .. "DrawCounterButton2", "visibility", "")
-    self.UI.setAttribute(string.lower(playerColor) .. "GraveyardFloatingCardCounterButton1", "visibility", "")
-    self.UI.setAttribute(string.lower(playerColor) .. "GraveyardFloatingCardCounterButton2", "visibility", "")
-    self.UI.setAttribute(string.lower(playerColor) .. "GraveyardCardCounterButtons", "visibility", "")
+    broadcastToColor("Revealed Counter Buttons to Opponents", myPlayer.color, {255, 255, 255})
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "DamageTakenCounterButtons", "visibility", "")
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "BanishmentCardCounterButtons", "visibility", "")
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "DrawCounterButton1", "visibility", "")
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "DrawCounterButton2", "visibility", "")
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "GraveyardFloatingCardCounterButton1", "visibility", "")
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "GraveyardFloatingCardCounterButton2", "visibility", "")
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "GraveyardCardCounterButtons", "visibility", "")
   end
 
   trustOthers = not trustOthers
 end
 
 function updateDamageTakenCounter()
-  self.UI.setValue(string.lower(playerColor) .. "DamageTakenCounter", damageTakenCounterCount .. " Damage")
-  self.UI.setValue(string.lower(playerColor) .. "DamageTakenCounterOpposite", damageTakenCounterCount .. " Damage")
+  self.UI.setValue(string.lower(myPlayer.color) .. "DamageTakenCounter", damageTakenCounterCount .. " Damage")
+  self.UI.setValue(string.lower(myPlayer.color) .. "DamageTakenCounterOpposite", damageTakenCounterCount .. " Damage")
 end
 
 function incrementDamageTakenCounter()
@@ -372,11 +382,11 @@ end
 
 function updateBanishmentCardCounter()
   if banishmentCardCounterCount == 1 then
-    self.UI.setValue(string.lower(playerColor) .. "BanishmentCardCounter", "1 Card")
-    self.UI.setValue(string.lower(playerColor) .. "BanishmentCardCounterOpposite", "1 Card")
+    self.UI.setValue(string.lower(myPlayer.color) .. "BanishmentCardCounter", "1 Card")
+    self.UI.setValue(string.lower(myPlayer.color) .. "BanishmentCardCounterOpposite", "1 Card")
   else
-    self.UI.setValue(string.lower(playerColor) .. "BanishmentCardCounter", banishmentCardCounterCount .. " Cards")
-    self.UI.setValue(string.lower(playerColor) .. "BanishmentCardCounterOpposite", banishmentCardCounterCount .. " Cards")
+    self.UI.setValue(string.lower(myPlayer.color) .. "BanishmentCardCounter", banishmentCardCounterCount .. " Cards")
+    self.UI.setValue(string.lower(myPlayer.color) .. "BanishmentCardCounterOpposite", banishmentCardCounterCount .. " Cards")
   end
 end
 
@@ -399,21 +409,21 @@ end
 
 function toggleVisibilityBanishmentCardCounter()
   if banishmentCardCounterRevealed then
-    broadcastToColor("Hid Banishment Card Counter", playerColor, {255, 255, 255})
-    self.UI.setAttribute(string.lower(playerColor) .. "BanishmentCardCounterPanel", "visibility", playerVisibilities.mySide.invisible)
-    self.UI.setAttribute(string.lower(playerColor) .. "BanishmentCardCounterPanelOpposite", "visibility", playerVisibilities.oppositeSide.invisible)
+    broadcastToColor("Hid Banishment Card Counter", myPlayer.color, {255, 255, 255})
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "BanishmentCardCounterPanel", "visibility", playerVisibilities.mySide.invisible)
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "BanishmentCardCounterPanelOpposite", "visibility", playerVisibilities.oppositeSide.invisible)
   else
-    broadcastToColor("Revealed Banishment Card Counter", playerColor, {255, 255, 255})
-    self.UI.setAttribute(string.lower(playerColor) .. "BanishmentCardCounterPanel", "visibility", playerVisibilities.mySide.visible)
-    self.UI.setAttribute(string.lower(playerColor) .. "BanishmentCardCounterPanelOpposite", "visibility", playerVisibilities.oppositeSide.visible)
+    broadcastToColor("Revealed Banishment Card Counter", myPlayer.color, {255, 255, 255})
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "BanishmentCardCounterPanel", "visibility", playerVisibilities.mySide.visible)
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "BanishmentCardCounterPanelOpposite", "visibility", playerVisibilities.oppositeSide.visible)
   end
 
   banishmentCardCounterRevealed = not banishmentCardCounterRevealed
 end
 
 function updateDrawCounter()
-  self.UI.setValue(string.lower(playerColor) .. "DrawCounter", drawCounterCount .. "\nDrawn")
-  self.UI.setValue(string.lower(playerColor) .. "DrawCounterOpposite", drawCounterCount .. "\nDrawn")
+  self.UI.setValue(string.lower(myPlayer.color) .. "DrawCounter", drawCounterCount .. "\nDrawn")
+  self.UI.setValue(string.lower(myPlayer.color) .. "DrawCounterOpposite", drawCounterCount .. "\nDrawn")
 end
 
 function incrementDrawCounter()
@@ -434,8 +444,8 @@ function clearDrawCounter()
 end
 
 function updateGraveyardFloatingCardCounter()
-  self.UI.setValue(string.lower(playerColor) .. "GraveyardFloatingCardCounter", graveyardFloatingCardCounterCount .. "\nFloating")
-  self.UI.setValue(string.lower(playerColor) .. "GraveyardFloatingCardCounterOpposite", graveyardFloatingCardCounterCount .. "\nFloating")
+  self.UI.setValue(string.lower(myPlayer.color) .. "GraveyardFloatingCardCounter", graveyardFloatingCardCounterCount .. "\nFloating")
+  self.UI.setValue(string.lower(myPlayer.color) .. "GraveyardFloatingCardCounterOpposite", graveyardFloatingCardCounterCount .. "\nFloating")
 end
 
 function incrementGraveyardFloatingCardCounter()
@@ -452,11 +462,11 @@ end
 
 function updateGraveyardCardCounter()
   if graveyardCardCounterCount == 1 then
-    self.UI.setValue(string.lower(playerColor) .. "GraveyardCardCounter", "1 Card")
-    self.UI.setValue(string.lower(playerColor) .. "GraveyardCardCounterOpposite", "1 Card")
+    self.UI.setValue(string.lower(myPlayer.color) .. "GraveyardCardCounter", "1 Card")
+    self.UI.setValue(string.lower(myPlayer.color) .. "GraveyardCardCounterOpposite", "1 Card")
   else
-    self.UI.setValue(string.lower(playerColor) .. "GraveyardCardCounter", graveyardCardCounterCount .. " Cards")
-    self.UI.setValue(string.lower(playerColor) .. "GraveyardCardCounterOpposite", graveyardCardCounterCount .. " Cards")
+    self.UI.setValue(string.lower(myPlayer.color) .. "GraveyardCardCounter", graveyardCardCounterCount .. " Cards")
+    self.UI.setValue(string.lower(myPlayer.color) .. "GraveyardCardCounterOpposite", graveyardCardCounterCount .. " Cards")
   end
 end
 
@@ -479,13 +489,13 @@ end
 
 function toggleVisibilityGraveyardCardCounter()
   if graveyardCardCounterRevealed then
-    broadcastToColor("Hid Banishment Card Counter", playerColor, {255, 255, 255})
-    self.UI.setAttribute(string.lower(playerColor) .. "GraveyardCardCounterPanel", "visibility", playerVisibilities.mySide.invisible)
-    self.UI.setAttribute(string.lower(playerColor) .. "GraveyardCardCounterPanelOpposite", "visibility", playerVisibilities.oppositeSide.invisible)
+    broadcastToColor("Hid Banishment Card Counter", myPlayer.color, {255, 255, 255})
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "GraveyardCardCounterPanel", "visibility", playerVisibilities.mySide.invisible)
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "GraveyardCardCounterPanelOpposite", "visibility", playerVisibilities.oppositeSide.invisible)
   else
-    broadcastToColor("Revealed Banishment Card Counter", playerColor, {255, 255, 255})
-    self.UI.setAttribute(string.lower(playerColor) .. "GraveyardCardCounterPanel", "visibility", playerVisibilities.mySide.visible)
-    self.UI.setAttribute(string.lower(playerColor) .. "GraveyardCardCounterPanelOpposite", "visibility", playerVisibilities.oppositeSide.visible)
+    broadcastToColor("Revealed Banishment Card Counter", myPlayer.color, {255, 255, 255})
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "GraveyardCardCounterPanel", "visibility", playerVisibilities.mySide.visible)
+    self.UI.setAttribute(string.lower(myPlayer.color) .. "GraveyardCardCounterPanelOpposite", "visibility", playerVisibilities.oppositeSide.visible)
   end
 
   graveyardCardCounterRevealed = not graveyardCardCounterRevealed
@@ -544,7 +554,7 @@ function recollectMemory()
   if (memoryZone.getObjects()) != nil then
     for _,item in ipairs(memoryZone.getObjects()) do
       if item.tag == "Card" then
-        item.deal(1,playerColor)
+        item.deal(1,myPlayer.color)
       end
     end
   end
@@ -556,9 +566,9 @@ function hideMemoryButtons()
   memoryButtonsVisible = not memoryButtonsVisible
 
   if memoryButtonsVisible then
-    self.UI.show(string.lower(playerColor) .. "MemoryButtons")
+    self.UI.show(string.lower(myPlayer.color) .. "MemoryButtons")
   else
-    self.UI.hide(string.lower(playerColor) .. "MemoryButtons")
+    self.UI.hide(string.lower(myPlayer.color) .. "MemoryButtons")
   end
 
 end
