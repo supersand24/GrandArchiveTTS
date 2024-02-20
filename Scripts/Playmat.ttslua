@@ -158,6 +158,19 @@ function importDeck()
           }
         })
 
+        --Shuffle Main Deck
+        local mainDeckCount = 0
+        for c,card in pairs(json.cards.main) do
+          mainDeckCount = mainDeckCount + card.quantity
+        end
+        Wait.frames(function()
+          for _, obj in pairs(mainDeckZone.getObjects()) do
+            if obj.type == "Deck" then
+              obj.shuffle()
+            end
+          end
+        end, mainDeckCount * 3)
+
         -- Hide Import Button UI
         hideDeckImport()
 
@@ -232,7 +245,7 @@ function resetPlayspace()
         end
       end
 
-      for _, obj in pairs(myPlayer.getHandObjects(0)) do
+      for _, obj in pairs(myPlayer.getHoldingObjects()) do
         destroyObject(obj)
       end
 

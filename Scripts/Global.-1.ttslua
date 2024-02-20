@@ -204,30 +204,69 @@ end
 
 function importDecks(params)
 
-  log("Importing Main")
+  local temp = 0;
 
   --Main Deck
+  local ii = 0
   for c,card in pairs(params.decks.main) do
     for i=1, card.quantity do
-      spawnGrandArchiveCard({name = card.name, image = card.image, pos = params.mainDeck.position, rot = params.mainDeck.rotation})
+      Wait.frames(function()
+        spawnGrandArchiveCard({name = card.name, image = card.image, pos = params.mainDeck.position, rot = params.mainDeck.rotation})
+      end, 3 * temp)
+      temp = temp + 1
     end
   end
 
-  log("Importing Material")
+  temp = 0;
 
   --Material Deck
-  for c,card in pairs(params.decks.material) do
+  local materialDeck = params.decks.material
+  for c = #materialDeck, 1, -1 do
+    local card = materialDeck[c]
+    Wait.frames(function()
+      for i=1, card.quantity do
+        spawnGrandArchiveCard({name = card.name, image = card.image, pos = params.materialDeck.position, rot = params.materialDeck.rotation})
+      end
+    end, 5 * temp)
+    temp = temp + 1
+  end
+
+  temp = 0;
+
+  --Side Deck
+  local sideDeck = params.decks.sideboard
+  for c = #sideDeck, 1, -1 do
+    local card = sideDeck[c]
     for i=1, card.quantity do
-      spawnGrandArchiveCard({name = card.name, image = card.image, pos = params.materialDeck.position, rot = params.materialDeck.rotation})
+      Wait.frames(function()
+        spawnGrandArchiveCard({name = card.name, image = card.image, pos = params.sideDeck.position, rot = params.sideDeck.rotation})
+      end, 5 * temp)
+      temp = temp + 1
     end
   end
 
-  --Side Deck
-  for c,card in pairs(params.decks.sideboard) do
+  --Tokens & Generated
+  local tokens = params.decks.token
+  for c = #tokens, 1, -1 do
+    local card = tokens[c]
     for i=1, card.quantity do
-      spawnGrandArchiveCard({name = card.name, image = card.image, pos = params.sideDeck.position, rot = params.sideDeck.rotation})
+      Wait.frames(function()
+        spawnGrandArchiveCard({name = card.name, image = card.image, pos = params.tokens.position, rot = params.tokens.rotation})
+      end, 5 * temp)
+      temp = temp + 1
     end
   end
+  tokens = params.decks.generated
+  for c = #tokens, 1, -1 do
+    local card = tokens[c]
+    for i=1, card.quantity do
+      Wait.frames(function()
+        spawnGrandArchiveCard({name = card.name, image = card.image, pos = params.tokens.position, rot = params.tokens.rotation})
+      end, 5 * temp)
+      temp = temp + 1
+    end
+  end
+
 end
 
 function spawnGrandArchiveCard(params)
@@ -300,10 +339,10 @@ function onPlayerTurnEnd(player_color_end, player_color_next)
   end
 
   -- Reset Cards Drawn Counters
-  getObjectFromGUID(RED_DRAW_COUNTER).Counter.clear()
-  getObjectFromGUID(BLUE_DRAW_COUNTER).Counter.clear()
-  getObjectFromGUID(GREEN_DRAW_COUNTER).Counter.clear()
-  getObjectFromGUID(YELLOW_DRAW_COUNTER).Counter.clear()
+  getObjectFromGUID(RED_PLAYMAT).call("clearDrawCounter")
+  getObjectFromGUID(BLUE_PLAYMAT).call("clearDrawCounter")
+  getObjectFromGUID(GREEN_PLAYMAT).call("clearDrawCounter")
+  getObjectFromGUID(YELLOW_PLAYMAT).call("clearDrawCounter")
 end
 
 function onLoad(save_state)
