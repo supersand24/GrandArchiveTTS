@@ -36,17 +36,13 @@ YELLOW_DRAW_COUNTER = '167ada'
 YELLOW_PLAYMAT = 'b90a1d'
 
 privacyZones = {
-  Red = {"Blue","Green","Yellow"},
-  Blue = {"Red","Green","Yellow"},
-  Green = {"Red","Blue","Yellow"},
-  Yellow = {"Red","Blue","Green"}
+  Red = {"Blue"},
+  Blue = {"Red"}
 }
 
 playmats = {
   Red = 'dacc34',
-  Blue = '609cf2',
-  Green = 'ebfacc',
-  Yellow = 'b90a1d'
+  Blue = '609cf2'
 }
 
 --TTS is lacking in this area...
@@ -364,18 +360,6 @@ function onLoad(save_state)
   getObjectFromGUID(BLUE_HANDBOOK).setInvisibleTo(privacyZones["Blue"])
   for _, bag in ipairs(getObjectFromGUID(BLUE_TOKENS).getObjects()) do
     bag.setInvisibleTo(privacyZones["Blue"])
-  end
-
-  getObjectFromGUID(GREEN_TABLET).setInvisibleTo(privacyZones["Green"])
-  getObjectFromGUID(GREEN_HANDBOOK).setInvisibleTo(privacyZones["Green"])
-  for _, bag in ipairs(getObjectFromGUID(GREEN_TOKENS).getObjects()) do
-    bag.setInvisibleTo(privacyZones["Green"])
-  end
-
-  getObjectFromGUID(YELLOW_TABLET).setInvisibleTo(privacyZones["Yellow"])
-  getObjectFromGUID(YELLOW_HANDBOOK).setInvisibleTo(privacyZones["Yellow"])
-  for _, bag in ipairs(getObjectFromGUID(YELLOW_TOKENS).getObjects()) do
-    bag.setInvisibleTo(privacyZones["Yellow"])
   end
 
   --Pay 1 Memory Card Keybind

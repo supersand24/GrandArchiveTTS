@@ -130,7 +130,7 @@
   <Panel
     position="-1523 820 0"
     width="408" height="250"
-    visibility="Red|Green|Grey|Black"
+    visibility="Red|Grey|Black"
   >
     <VerticalLayout>
       <HorizontalLayout>
@@ -166,7 +166,7 @@
     position="-1523 820 0"
     rotation="0 0 180"
     width="408" height="250"
-    visibility="Blue|Yellow"
+    visibility="Blue"
   >
     <VerticalLayout>
       <Text
@@ -309,7 +309,7 @@
     position="1740 103 0"
     rotation="0 0 180"
     width="240" height="408"
-    visibility="Blue|Yellow"
+    visibility="Blue"
   >
     <VerticalLayout>
       <Button
@@ -366,7 +366,7 @@
     position="1740 -402 0"
     rotation="0 0 180"
     width="240" height="408"
-    visibility="Blue|Yellow"
+    visibility="Blue"
   >
     <VerticalLayout>
       <Button

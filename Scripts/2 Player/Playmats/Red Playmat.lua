@@ -68,8 +68,8 @@ local memoryButtonsVisible = true
 
 local myPlayer = Player.Red
 local playerVisibilities = {
-  mySide = { visible = "Red|Green|Grey|Black", invisible = "Red|Grey|Black" },
-  oppositeSide = { visible = "Blue|Yellow", invisible = "Pink" }
+  mySide = { visible = "Red|Grey|Black", invisible = "Red|Grey|Black" },
+  oppositeSide = { visible = "Blue", invisible = "Pink" }
 }
 local mod = -1
 
