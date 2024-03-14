@@ -76,7 +76,7 @@ local flippedBoard = true
 local deckURL = "https://build.silvie.org/"
 
 function getTokensZone()
-    return tokensZone
+  return tokensZone
 end
 
 function syncTextFields(player, value, id)
@@ -169,7 +169,7 @@ function importDeck()
               obj.shuffle()
             end
           end
-        end, mainDeckCount * 3)
+        end, (mainDeckCount * 3) + 10)
 
         -- Hide Import Button UI
         hideDeckImport()
@@ -204,48 +204,48 @@ function resetPlayspace()
   myPlayer.showConfirmDialog("Reset your placespace?",
     function (player_color)
       for _, obj in pairs(fieldZone.getObjects()) do
-        if obj.type == "Card" or obj.type == "Deck" then
+        if obj.type == "Card" or obj.type == "Deck" or obj.type == "Block" or obj.type == "Dice" then
           destroyObject(obj)
         end
       end
     
       for _, obj in pairs(memoryZone.getObjects()) do
-        if obj.type == "Card" or obj.type == "Deck" then
+        if obj.type == "Card" or obj.type == "Deck" or obj.type == "Block" or obj.type == "Dice" then
           destroyObject(obj)
         end
       end
     
       for _, obj in pairs(banishmentZone.getObjects()) do
-        if obj.type == "Card" or obj.type == "Deck" then
+        if obj.type == "Card" or obj.type == "Deck" or obj.type == "Block" or obj.type == "Dice" then
           destroyObject(obj)
         end
       end
     
       for _, obj in pairs(mainDeckZone.getObjects()) do
-        if obj.type == "Card" or obj.type == "Deck" then
+        if obj.type == "Card" or obj.type == "Deck" or obj.type == "Block" or obj.type == "Dice" then
           destroyObject(obj)
         end
       end
 
       for _, obj in pairs(graveyardZone.getObjects()) do
-        if obj.type == "Card" or obj.type == "Deck" then
+        if obj.type == "Card" or obj.type == "Deck" or obj.type == "Block" or obj.type == "Dice" then
           destroyObject(obj)
         end
       end
     
       for _, obj in pairs(materialDeckZone.getObjects()) do
-        if obj.type == "Card" or obj.type == "Deck" then
+        if obj.type == "Card" or obj.type == "Deck" or obj.type == "Block" or obj.type == "Dice" then
           destroyObject(obj)
         end
       end
     
       for _, obj in pairs(sideDeckZone.getObjects()) do
-        if obj.type == "Card" or obj.type == "Deck" then
+        if obj.type == "Card" or obj.type == "Deck" or obj.type == "Block" or obj.type == "Dice" then
           destroyObject(obj)
         end
       end
 
-      for _, obj in pairs(myPlayer.getHoldingObjects()) do
+      for _, obj in pairs(myPlayer.getHandObjects()) do
         destroyObject(obj)
       end
 
