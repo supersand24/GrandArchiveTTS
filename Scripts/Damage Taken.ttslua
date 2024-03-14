@@ -1,4 +1,0 @@
-function onLoad()
-  --Prevent ALT Interaction
-  self.interactable = true
-end

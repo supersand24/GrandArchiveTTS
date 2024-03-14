@@ -1,4 +1,4 @@
--- Ranged Counter Dice
+-- Music Counter
 
 function onNumberTyped(player_color, number)
   
@@ -13,12 +13,9 @@ function updateNameAndDescription(num)
 
     -- Name
     if num == 1 then
-        self.setName("Ranged Counter")
+        self.setName("Music Counter")
     else
-        self.setName("Ranged Counters")
+        self.setName("Music Counters")
     end
-
-    -- Description
-    self.setDescription("+" .. num .. " Power while distant")
 
 end

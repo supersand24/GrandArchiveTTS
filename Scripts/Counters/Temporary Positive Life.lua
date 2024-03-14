@@ -1,7 +1,7 @@
--- Tactic Counter Dice
+-- Temporary Positive Life Counter
 
 function onNumberTyped(player_color, number)
-  
+
     -- Check if number is valid.
     if number <= 20 then
         updateNameAndDescription(number)
@@ -11,14 +11,7 @@ end
 
 function updateNameAndDescription(num)
 
-    -- Name
-    if num == 1 then
-        self.setName("Tactic Counter")
-    else
-        self.setName("Tactic Counters")
-    end
-
     -- Description
-    self.setDescription("Freydis Exclusive")
+    self.setDescription("+" .. num .. " Life until the End of Turn\n\n(This will delete itself when passing turns)")
 
 end

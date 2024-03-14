@@ -1,4 +1,4 @@
--- Lash Counter Dice
+-- Buff Counter
 
 function onNumberTyped(player_color, number)
   
@@ -13,12 +13,12 @@ function updateNameAndDescription(num)
 
     -- Name
     if num == 1 then
-        self.setName("Lash Counter")
+        self.setName("Buff")
     else
-        self.setName("Lash Counters")
+        self.setName("Buffs")
     end
 
     -- Description
-    self.setDescription("Nico Exclusive Counter")
+    self.setDescription("+" .. num .. " Power\n+" .. num .. " Life")
 
 end

@@ -1,4 +1,4 @@
--- Age Counter Dice
+-- Durability Counter
 
 function onNumberTyped(player_color, number)
   
@@ -11,14 +11,11 @@ end
 
 function updateNameAndDescription(num)
 
-    -- Name
-    if num == 1 then
-        self.setName("Age Counter")
-    else
-        self.setName("Age Counters")
-    end
-
     -- Description
-    self.setDescription("Wildgrowth Elixir Exclusive")
+    if num == 1 then
+        self.setDescription("This weapon can only be used 1 more time before it breaks.")
+    else
+        self.setDescription("This weapon can only be used " .. num .. " more times before it breaks.")
+    end
 
 end

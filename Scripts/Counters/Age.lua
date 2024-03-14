@@ -1,4 +1,4 @@
--- Time Counter Dice
+-- Age Counter
 
 function onNumberTyped(player_color, number)
   
@@ -13,12 +13,9 @@ function updateNameAndDescription(num)
 
     -- Name
     if num == 1 then
-        self.setName("Time Counter")
+        self.setName("Age Counter")
     else
-        self.setName("Time Counters")
+        self.setName("Age Counters")
     end
-
-    -- Description
-    self.setDescription("Temporal Spectrometer Exclusive")
 
 end
