@@ -1,0 +1,15 @@
+<Panel
+    id="yellowTablet"
+    position="0 750 0"
+    rotation="0 0 180"
+    width="1000" height="250"
+    color="Black"
+    visibility="Yellow"
+>
+    <Button 
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        onClick="onGenerateCardButtonPressed"
+        fontSize="120"
+    >Generate Card</Button>
+</Panel>

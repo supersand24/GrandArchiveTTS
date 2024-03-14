@@ -1,0 +1,473 @@
+<Panel
+  id="redField"
+  position="0 0 -12"
+  rotation="0 0 180"
+  width="300" height="200"
+  scale="0.1"
+>
+  <!--DECK IMPORT-->
+  <VerticalLayout
+    id="redDeckImport"
+    position="0 350 0"
+    width="2200"
+    height="500"
+    spacing="50"
+    childAlignment="MiddleCenter"
+    visibility="Red"
+  >
+    <InputField
+      colors="(#000000|#222222|#444444)"
+      textColor="#8A8A8A"
+      fontSize="160"
+      placeholder="Insert deck link here."
+      onEndEdit="syncTextFields"
+    ></InputField>
+    <HorizontalLayout
+      preferredHeight="200"
+      spacing="50"
+      padding="400 400 0 0"
+    >
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="160"
+        preferredWidth="1000"
+        onClick="importDeck"
+      >Import Decks</Button>
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="160"
+        preferredWidth="200"
+        onClick="hideDeckImport"
+      >X</Button>
+    </HorizontalLayout>
+  
+  </VerticalLayout>
+
+  <!--MEMORY BUTTONS-->
+  <Panel
+    position="0 -950 0"
+    width="2500"
+    spacing="20"
+    visibility="Red"
+  >
+    <Button
+      position="-1400 0 0"
+      width="300"
+      colors="(#000000|#222222|#444444)"
+      textColor="#8A8A8A"
+      fontSize="100"
+      onClick="hideMemoryButtons"
+    >Hide</Button>
+    <HorizontalLayout
+      id="redMemoryButtons"
+    >
+      <Button
+      colors="(#000000|#222222|#444444)"
+      textColor="#8A8A8A"
+      fontSize="100"
+      onClick="payOneMemoryCard"
+    >Pay 1 Memory</Button>
+    <Button
+      colors="(#000000|#222222|#444444)"
+      textColor="#8A8A8A"
+      fontSize="100"
+      onClick="revealRandomMemoryCard"
+    >Reveal Random</Button>
+    <Button
+      colors="(#000000|#222222|#444444)"
+      textColor="#8A8A8A"
+      fontSize="100"
+      onClick="recollectMemory"
+    >Recollect</Button>
+    </HorizontalLayout>
+  </Panel>
+
+  <!--MENU BUTTONS-->
+  <!--Max Height should be 2000-->
+  <Panel
+    position="-3400 0 0"
+    width="1000" height="1000"
+    color="Black"
+    visibility="Red"
+  >
+    <VerticalLayout>
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="100"
+        onClick="showDeckImport"
+      >Show Import Decks</Button>
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="100"
+        onClick="importDeck"
+      >Reimport Decks</Button>
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="100"
+        onClick="resetPlayspace"
+      >Reset Playspace</Button>
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="100"
+        onClick="toggleMagnets"
+      >Toggle Magnets</Button>
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="100"
+        onClick="toggleTrustOthers"
+      >Toggle Trust Others</Button>
+    </VerticalLayout>
+  </Panel>
+
+  <!--DAMAGE TAKEN COUNTER for SELF-->
+  <Panel
+    position="-1523 820 0"
+    width="408" height="250"
+    visibility="Red|Green|Grey|Black"
+  >
+    <VerticalLayout>
+      <HorizontalLayout>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="clearDamageTakenCounter"
+        >c</Button>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="decrementDamageTakenCounter"
+        >-</Button>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="incrementDamageTakenCounter"
+        >+</Button>
+      </HorizontalLayout>
+      <Text
+        color="#8A8A8A"
+        fontSize="64"
+        id="redDamageTakenCounter"
+      >0 Damage</Text>
+    </VerticalLayout>
+  </Panel>
+
+  <!--DAMAGE TAKEN COUNTER for OTHER-->
+  <Panel
+    position="-1523 820 0"
+    rotation="0 0 180"
+    width="408" height="250"
+    visibility="Blue|Yellow"
+  >
+    <VerticalLayout>
+      <Text
+        color="#8A8A8A"
+        fontSize="64"
+        id="redDamageTakenCounterOpposite"
+      >0 Damage</Text>
+      <HorizontalLayout id="redDamageTakenCounterButtons" >
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="incrementDamageTakenCounter"
+        >+</Button>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="decrementDamageTakenCounter"
+        >-</Button>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="clearDamageTakenCounter"
+        >c</Button>
+      </HorizontalLayout>
+    </VerticalLayout>
+  </Panel>
+
+  <!--BANISHMENT COUNTER for SELF-->
+  <Panel
+    id="redBanishmentCardCounterPanel"
+    position="1523 820 0"
+    width="408" height="250"
+    visibility="Red|Grey|Black"
+  >
+    <VerticalLayout>
+      <HorizontalLayout>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="incrementBanishmentCardCounter"
+        >+</Button>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="decrementBanishmentCardCounter"
+        >-</Button>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="clearBanishmentCardCounter"
+        >c</Button>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="toggleVisibilityBanishmentCardCounter"
+          visibility="Red"
+        >H</Button>
+      </HorizontalLayout>
+      <Text
+        id="redBanishmentCardCounter"
+        color="#8A8A8A"
+        fontSize="64"
+      >0 Cards</Text>
+    </VerticalLayout>
+  </Panel>
+
+  <!--BANISHMENT COUNTER for OTHER-->
+  <Panel
+    id="redBanishmentCardCounterPanelOpposite"
+    position="1523 820 0"
+    rotation="0 0 180"
+    width="408" height="250"
+    visibility="Pink"
+  >
+    <VerticalLayout>
+      <Text
+        id="redBanishmentCardCounterOpposite"
+        color="#8A8A8A"
+        fontSize="64"
+      >0 Cards</Text>
+      <HorizontalLayout id="redBanishmentCardCounterButtons" >
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="clearBanishmentCardCounter"
+        >c</Button>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="decrementBanishmentCardCounter"
+        >-</Button>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="incrementBanishmentCardCounter"
+        >+</Button>
+      </HorizontalLayout>
+    </VerticalLayout>
+  </Panel>
+
+  <!--DRAW COUNTER for SELF-->
+  <Panel
+    position="1740 103 0"
+    width="240" height="408"
+    visibility="Red|Grey|Black"
+  >
+    <VerticalLayout>
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="80"
+        onClick="incrementDrawCounter"
+      >+</Button>
+      <Text
+        id="redDrawCounter"
+        color="#8A8A8A"
+        fontSize="64"
+      >0&#10;Drawn</Text>
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="80"
+        onClick="decrementDrawCounter"
+      >-</Button>
+    </VerticalLayout>
+  </Panel>
+
+  <!--DRAW COUNTER for OTHER-->
+  <Panel
+    position="1740 103 0"
+    rotation="0 0 180"
+    width="240" height="408"
+    visibility="Blue|Yellow"
+  >
+    <VerticalLayout>
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="80"
+        onClick="incrementDrawCounter"
+        id="redDrawCounterButton1"
+      >+</Button>
+      <Text
+        id="redDrawCounterOpposite"
+        color="#8A8A8A"
+        fontSize="64"
+      >0&#10;Drawn</Text>
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="80"
+        onClick="decrementDrawCounter"
+        id="redDrawCounterButton2"
+      >-</Button>
+    </VerticalLayout>
+  </Panel>
+
+  <!--GRAVEYARD FLOATING COUNTER for SELF-->
+  <Panel
+    position="1740 -402 0"
+    width="240" height="408"
+    visibility="Red|Grey|Black"
+  >
+    <VerticalLayout>
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="80"
+        onClick="incrementGraveyardFloatingCardCounter"
+      >+</Button>
+      <Text
+        id="redGraveyardFloatingCardCounter"
+        color="#8A8A8A"
+        fontSize="64"
+      >0&#10;Floating</Text>
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="80"
+        onClick="decrementGraveyardFloatingCardCounter"
+      >-</Button>
+    </VerticalLayout>
+  </Panel>
+
+  <!--GRAVEYARD FLOATING COUNTER for OTHER-->
+  <Panel
+    position="1740 -402 0"
+    rotation="0 0 180"
+    width="240" height="408"
+    visibility="Blue|Yellow"
+  >
+    <VerticalLayout>
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="80"
+        onClick="incrementGraveyardFloatingCardCounter"
+        id="redGraveyardFloatingCardCounterButton1"
+      >+</Button>
+      <Text
+        id="redGraveyardFloatingCardCounterOpposite"
+        color="#8A8A8A"
+        fontSize="64"
+      >0&#10;Floating</Text>
+      <Button
+        colors="(#000000|#222222|#444444)"
+        textColor="#8A8A8A"
+        fontSize="80"
+        onClick="decrementGraveyardFloatingCardCounter"
+        id="redGraveyardFloatingCardCounterButton2"
+      >-</Button>
+    </VerticalLayout>
+  </Panel>
+
+  <!--GRAVEYARD COUNTER for SELF-->
+  <Panel
+    id="redGraveyardCardCounterPanel"
+    position="1523 -735 0"
+    width="408" height="250"
+    visibility="Red|Grey|Black"
+  >
+    <VerticalLayout>
+      <Text
+        id="redGraveyardCardCounter"
+        color="#8A8A8A"
+        fontSize="64"
+      >0 Cards</Text>
+      <HorizontalLayout>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="incrementGraveyardCardCounter"
+        >+</Button>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="decrementGraveyardCardCounter"
+        >-</Button>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="clearGraveyardCardCounter"
+        >c</Button>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="toggleVisibilityGraveyardCardCounter"
+        >H</Button>
+      </HorizontalLayout>
+    </VerticalLayout>
+  </Panel>
+
+  <!--GRAVEYARD COUNTER for OTHER-->
+  <Panel
+    id="redGraveyardCardCounterPanelOpposite"
+    position="1523 -735 0"
+    rotation="0 0 180"
+    width="408" height="250"
+    visibility="Pink"
+  >
+    <VerticalLayout>
+      <HorizontalLayout id="redGraveyardCardCounterButtons" >
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="clearGraveyardCardCounter"
+        >c</Button>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="decrementGraveyardCardCounter"
+        >-</Button>
+        <Button
+          colors="(#000000|#222222|#444444)"
+          textColor="#8A8A8A"
+          fontSize="80"
+          onClick="incrementGraveyardCardCounter"
+        >+</Button>
+      </HorizontalLayout>
+      <Text
+        id="redGraveyardCardCounterOpposite"
+        color="#8A8A8A"
+        fontSize="64"
+      >0 Cards</Text>
+    </VerticalLayout>
+  </Panel>
+
+</Panel>
