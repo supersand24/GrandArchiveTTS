@@ -23,18 +23,6 @@ BLUE_TOKENS = 'd3281b'
 BLUE_DRAW_COUNTER = '1d4bc4'
 BLUE_PLAYMAT = '609cf2'
 
-GREEN_HANDBOOK = '6eec32'
-GREEN_TABLET = '89c0cf'
-GREEN_TOKENS = '96e172'
-GREEN_DRAW_COUNTER = '760afb'
-GREEN_PLAYMAT = 'ebfacc'
-
-YELLOW_HANDBOOK = 'a6c2e6'
-YELLOW_TABLET = '1a66e5'
-YELLOW_TOKENS = 'c8c527'
-YELLOW_DRAW_COUNTER = '167ada'
-YELLOW_PLAYMAT = 'b90a1d'
-
 privacyZones = {
   Red = {"Blue"},
   Blue = {"Red"}
@@ -337,8 +325,6 @@ function onPlayerTurnEnd(player_color_end, player_color_next)
   -- Reset Cards Drawn Counters
   getObjectFromGUID(RED_PLAYMAT).call("clearDrawCounter")
   getObjectFromGUID(BLUE_PLAYMAT).call("clearDrawCounter")
-  getObjectFromGUID(GREEN_PLAYMAT).call("clearDrawCounter")
-  getObjectFromGUID(YELLOW_PLAYMAT).call("clearDrawCounter")
 end
 
 function onLoad(save_state)
