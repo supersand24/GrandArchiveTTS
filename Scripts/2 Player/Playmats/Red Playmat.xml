@@ -87,7 +87,7 @@
   <!--MENU BUTTONS-->
   <!--Max Height should be 2000-->
   <Panel
-    position="-3400 0 0"
+    position="3000 0 0"
     width="1000" height="1000"
     color="Black"
     visibility="Red"
