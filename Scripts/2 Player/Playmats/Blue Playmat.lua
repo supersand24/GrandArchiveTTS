@@ -698,9 +698,11 @@ end
 function onLoad()
 
   --Prevent ALT Interaction
-  self.interactable = true
+  self.interactable = false
 
-  self.addContextMenuItem("Spawn Zones", spawnZones)
+  --Developer Use Only
+  --self.addContextMenuItem("Spawn Zones", spawnZones)
+  spawnZones()
 
   snapPoints = getNewSnapPoints()
   addFieldMagnets(snapPoints)
