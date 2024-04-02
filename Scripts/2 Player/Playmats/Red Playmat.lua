@@ -688,7 +688,7 @@ function onLoad()
 self.interactable = false
 
 --Developer Use Only
-self.addContextMenuItem("Spawn Zones", spawnZones)
+--self.addContextMenuItem("Spawn Zones", spawnZones)
 spawnZones()
 
 snapPoints = getNewSnapPoints()
